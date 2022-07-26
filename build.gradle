@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.deadline-8-26'
+group = 'com.hunseong'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -20,16 +20,28 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	// JWT
+	implementation 'com.auth0:java-jwt:3.19.2'
+
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.9'
+
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'com.google.code.gson:gson:2.9.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	// google api
+	implementation 'com.google.api-client:google-api-client:1.32.1'
+
 }
 
 tasks.named('test') {
