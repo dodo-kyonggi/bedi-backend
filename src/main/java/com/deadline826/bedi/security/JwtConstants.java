@@ -9,8 +9,8 @@ public class JwtConstants {
     public static final long DAY = 24 * HOUR;
     public static final long MONTH = 30 * DAY;
 
-    public static final long AT_EXP_TIME =  2 * MINUTE;
-    public static final long RT_EXP_TIME =  10 * MINUTE;
+    public static final long AT_EXP_TIME =  60 * MINUTE;
+    public static final long RT_EXP_TIME =  3 * MONTH;
 
     // Secret
     public static final String JWT_SECRET = "kakao_test_key";

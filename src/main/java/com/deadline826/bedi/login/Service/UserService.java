@@ -1,13 +1,21 @@
-package com.deadline826.bedi.service;
+package com.deadline826.bedi.login.Service;
 
-import com.deadline826.bedi.domain.RefreshToken;
-import com.deadline826.bedi.domain.dto.TokenDto;
-import com.deadline826.bedi.domain.dto.UserDto;
+import com.deadline826.bedi.Goal.Domain.Goal;
+import com.deadline826.bedi.Token.Domain.RefreshToken;
+import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import com.deadline826.bedi.security.CustomAuthenticationFilter;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface UserService {
+
+    List<Goal> getTodayGoals(User user, LocalDate date); // 오늘날짜의 목표 불러오기
+
+    User getUser(String id); //유저정보 불러오기
 
     void setCustomAuthenticationFilter(CustomAuthenticationFilter authenticationFilter);
 
@@ -21,7 +29,7 @@ public interface UserService {
 
     String resolveToken(HttpServletRequest request);   // Request의 Header에서 token 값을 가져옵니다.
 
-    String getUserId(String token);  //토큰에서 회원 아이디(= 이메일) 추출
+    String getUserId(String token);  //토큰에서 회원 아이디 추출
 
     UserDetails loadUserById(Long id);
 }

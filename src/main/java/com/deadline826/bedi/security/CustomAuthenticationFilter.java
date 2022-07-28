@@ -1,6 +1,6 @@
 package com.deadline826.bedi.security;
 
-import com.deadline826.bedi.domain.dto.UserDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

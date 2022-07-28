@@ -1,6 +1,6 @@
-package com.deadline826.bedi.repository;
+package com.deadline826.bedi.login.repository;
 
-import com.deadline826.bedi.domain.User;
+import com.deadline826.bedi.login.Domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

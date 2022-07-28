@@ -1,8 +1,12 @@
-package com.deadline826.bedi.domain;
+package com.deadline826.bedi.login.Domain;
 
+import com.deadline826.bedi.Goal.Domain.Goal;
+import com.deadline826.bedi.Token.Domain.RefreshToken;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -30,7 +34,10 @@ public class User {
     @JoinColumn
     private RefreshToken refreshToken;
 
-//    private String refreshToken;
+    @OneToMany(mappedBy = "user")
+    private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)
+
+
 
     public void updateRefreshToken(RefreshToken newToken) {
         this.refreshToken = newToken;

@@ -1,19 +1,22 @@
-package com.deadline826.bedi.service;
+package com.deadline826.bedi.login.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.deadline826.bedi.domain.RefreshToken;
-import com.deadline826.bedi.domain.User;
+import com.deadline826.bedi.Goal.Domain.Goal;
+import com.deadline826.bedi.Token.Domain.RefreshToken;
+import com.deadline826.bedi.login.Domain.User;
 
-import com.deadline826.bedi.domain.dto.TokenDto;
-import com.deadline826.bedi.domain.dto.UserDto;
+import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
 
 import com.deadline826.bedi.exception.CustomAuthenticationException;
-import com.deadline826.bedi.repository.RefreshTokenRepository;
-import com.deadline826.bedi.repository.UserRepository;
+import com.deadline826.bedi.Goal.repository.GoalRepository;
+import com.deadline826.bedi.Token.repository.RefreshTokenRepository;
+import com.deadline826.bedi.login.Service.UserService;
+import com.deadline826.bedi.login.repository.UserRepository;
 
 import com.deadline826.bedi.security.CustomAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.deadline826.bedi.security.JwtConstants.*;
@@ -47,21 +51,47 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private CustomAuthenticationFilter authenticationFilter;
+    private final GoalRepository goalRepository;
 
     @Override
     public void setCustomAuthenticationFilter(CustomAuthenticationFilter authenticationFilter) {
         this.authenticationFilter = authenticationFilter;
     }
 
-    //토큰에서 회원 아이디(= 이메일) 추출
+    //추가
+    @Override
+    public List<Goal> getTodayGoals(User user, LocalDate date){
+        List<Goal> goalsOrderByTitleAsc = goalRepository.findByUserAndDateOrderByTitleAsc(user,date);
+        return goalsOrderByTitleAsc;
+    }
+
+    @Override
+    public User getUser(String id){
+        Optional<User> getUser = userRepository.findById(Long.parseLong(id));
+        User user = getUser.get();
+        return user;
+    }
+
+    //토큰에서 회원 아이디 추출
     public String getUserId(String accesstoken) {
 
-        String[] token = accesstoken.split(" ");
+//        String[] token = accesstoken.split(" ");
 
         return Jwts.parser().setSigningKey(JWT_SECRET.getBytes(StandardCharsets.UTF_8))
-                .parseClaimsJws(token[1])
+                .parseClaimsJws(accesstoken)
                 .getBody()
                 .getSubject();
+    }
+
+    // 만료시간 추가
+    public Date getExpireTime(String refreshtoken) {
+
+//        String[] token = refreshtoken.split(" ");
+
+        return Jwts.parser().setSigningKey(JWT_SECRET.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(refreshtoken)
+                .getBody()
+                .getExpiration();
     }
 
     // Request의 Header에서 token 값을 가져옵니다.
@@ -70,6 +100,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     // 로그인 처리 후 JWT토큰 발급
+    //return 쪽 수정했습니다
     public TokenDto login(UserDto userDto) {
         try {
             //CustomAuthenticationFilter 의 attemptAuthentication 으로 이동
@@ -82,7 +113,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
             Object principal = authentication.getPrincipal();
 
-            Optional<com.deadline826.bedi.domain.User> userId = userRepository.findById(Long.parseLong(id));
+            Optional<User> userId = userRepository.findById(Long.parseLong(id));
             String kakao_random_id = userId.get().getId().toString();
 
             //토큰 생성
@@ -103,7 +134,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             RefreshToken remainRefreshToken = userId.get().getRefreshToken();
             if (remainRefreshToken!=null){
                 remainRefreshToken.setToken(refreshToken);
-            } else{
+            }
+
+            else{
                 RefreshToken refreshToken1 = new RefreshToken();
                 refreshToken1.setToken(refreshToken);
                 refreshToken1.setUser(userId.get());
@@ -113,9 +146,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 updateRefreshToken(kakao_random_id, save);
             }
 
+
+
             return TokenDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
+                    .refreshTokenExpireTime(getExpireTime(refreshToken))  // 이 부분
                     .build();
         } catch (AuthenticationException e) {
             throw new CustomAuthenticationException("로그인 잘못됨");
@@ -169,6 +205,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.updateRefreshToken(refreshToken);
     }
 
+
+    //return 쪽 수정했습니다
     @Override
     public TokenDto refresh(String refreshToken) {
 
@@ -202,11 +240,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     .withExpiresAt(new Date(now + RT_EXP_TIME))
                     .sign(Algorithm.HMAC256(JWT_SECRET));
             user.getRefreshToken().setToken(newRefreshToken);
+
+            return TokenDto.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(newRefreshToken)
+                    .refreshTokenExpireTime(getExpireTime(newRefreshToken))    // 이 부분
+                    .build();
         }
 
         return TokenDto.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken("유효기간이 충분합니다")   // 이 부분
                 .build();
+
+
+
     }
 }

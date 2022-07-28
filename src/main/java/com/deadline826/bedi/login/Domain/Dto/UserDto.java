@@ -1,7 +1,7 @@
-package com.deadline826.bedi.domain.dto;
+package com.deadline826.bedi.login.Domain.Dto;
 
-import com.deadline826.bedi.domain.Authority;
-import com.deadline826.bedi.domain.User;
+import com.deadline826.bedi.login.Domain.Authority;
+import com.deadline826.bedi.login.Domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

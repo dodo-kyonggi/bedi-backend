@@ -1,15 +1,15 @@
-package com.deadline826.bedi.service;
+package com.deadline826.bedi.login.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import com.deadline826.bedi.domain.Authority;
+import com.deadline826.bedi.login.Domain.Authority;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.deadline826.bedi.domain.dto.UserDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

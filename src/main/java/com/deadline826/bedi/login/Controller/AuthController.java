@@ -1,11 +1,11 @@
-package com.deadline826.bedi.controller;
+package com.deadline826.bedi.login.Controller;
 
-import com.deadline826.bedi.domain.dto.TokenDto;
-import com.deadline826.bedi.domain.dto.UserDto;
-import com.deadline826.bedi.domain.dto.UserRequestDto;
-import com.deadline826.bedi.service.GoogleService;
-import com.deadline826.bedi.service.KakaoService;
-import com.deadline826.bedi.service.UserService;
+import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
+import com.deadline826.bedi.login.Domain.Dto.UserRequestDto;
+import com.deadline826.bedi.login.Service.GoogleService;
+import com.deadline826.bedi.login.Service.KakaoService;
+import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,8 +75,11 @@ public class AuthController {
 
     // 내정보 가져오기
     @GetMapping("/my")
-    public String my(HttpServletRequest request) {
-        String token = userService.resolveToken(request);
-        return userService.getUserId(token);
+    public String my(HttpServletRequest request,HttpServletResponse response) {
+
+        // 헤더에 담겨오는 accessToken 가져오기
+        String authrizationHeader = userService.resolveToken(request);
+        String accessToken = authrizationHeader.substring(TOKEN_HEADER_PREFIX.length());
+        return userService.getUserId(accessToken);
     }
 }
