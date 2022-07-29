@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,20 +54,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.authenticationFilter = authenticationFilter;
     }
 
-    //토큰에서 회원 아이디(= 이메일) 추출
-    public String getUserId(String accesstoken) {
-
-        String[] token = accesstoken.split(" ");
-
-        return Jwts.parser().setSigningKey(JWT_SECRET.getBytes(StandardCharsets.UTF_8))
-                .parseClaimsJws(token[1])
-                .getBody()
-                .getSubject();
-    }
-
-    // Request의 Header에서 token 값을 가져옵니다.
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(AUTHORIZATION);
+    //토큰에서 회원 객체 추출
+    public User getUserFromAccessToken() {
+        try {
+            // Authorization filter에서 SecurityContextHolder에서 set한 authentication 객체를 가져온다.
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userId = authentication.getPrincipal().toString();
+            return userRepository.findById(Long.parseLong(userId)).get();
+        } catch (Exception e) {
+            log.error(String.valueOf(e));
+            return null;
+        }
     }
 
     // 로그인 처리 후 JWT토큰 발급
@@ -106,7 +104,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             } else{
                 RefreshToken refreshToken1 = new RefreshToken();
                 refreshToken1.setToken(refreshToken);
-                refreshToken1.setUser(userId.get());
                 RefreshToken save = refreshTokenRepository.save(refreshToken1);
 
                 //RefreshToken 의 기본키를 user 의 외래키로 설정
@@ -209,4 +206,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .refreshToken(refreshToken)
                 .build();
     }
+
 }

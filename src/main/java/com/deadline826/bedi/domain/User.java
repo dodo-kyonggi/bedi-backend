@@ -19,6 +19,7 @@ public class User {
     private Long id;       // 카카오가 넘겨주는 랜덤 값
 
     private String username;   // 사용자 이름
+
     private String password;
 
     private String email;  //카카오 이메일
@@ -27,7 +28,7 @@ public class User {
     private Authority authority;
 
     @OneToOne
-    @JoinColumn
+    @JoinColumn (name = "refresh_id")
     private RefreshToken refreshToken;
 
 //    private String refreshToken;

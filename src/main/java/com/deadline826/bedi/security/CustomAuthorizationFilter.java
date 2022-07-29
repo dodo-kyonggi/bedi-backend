@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -42,7 +43,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 servletPath.equals("/auth/google") || servletPath.equals("/google/refresh")
         ) {
             filterChain.doFilter(request, response);
-        } else if (authrizationHeader == null || !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
+        } else if (authrizationHeader == null || !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX) || !StringUtils.hasText(authrizationHeader.substring(7))) {
             // 토큰값이 없거나 정상적이지 않다면 400 오류
             log.info("CustomAuthorizationFilter : JWT Token이 존재하지 않습니다.");
             response.setStatus(SC_BAD_REQUEST);
@@ -63,8 +64,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 String username = decodedJWT.getSubject();
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, Collections.EMPTY_LIST);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                filterChain.doFilter(request, response);
 
+                filterChain.doFilter(request, response);
 
             } catch (TokenExpiredException e) {
                 log.info("CustomAuthorizationFilter : Access Token이 만료되었습니다.");
