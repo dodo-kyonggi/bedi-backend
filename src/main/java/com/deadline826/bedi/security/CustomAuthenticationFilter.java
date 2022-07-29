@@ -1,6 +1,6 @@
 package com.deadline826.bedi.security;
 
-import com.deadline826.bedi.domain.dto.UserDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,7 +9,6 @@ import org.springframework.security.core.AuthenticationException;
 
 @Slf4j
 public class CustomAuthenticationFilter {
-
     //SecurityConfig 의 authenticationManagerBean 에서 주입받는다
     private  AuthenticationManager authenticationManager;
 
@@ -38,5 +37,7 @@ public class CustomAuthenticationFilter {
             return null;
         }
     }
-    
+
+
+
 }

@@ -1,4 +1,4 @@
-package com.deadline826.bedi.domain.dto;
+package com.deadline826.bedi.login.Domain.Dto;
 
 import lombok.Getter;
 

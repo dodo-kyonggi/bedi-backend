@@ -1,8 +1,8 @@
 package com.deadline826.bedi.security;
 
-import com.deadline826.bedi.domain.User;
-import com.deadline826.bedi.repository.UserRepository;
-import com.deadline826.bedi.service.UserService;
+import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.repository.UserRepository;
+import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

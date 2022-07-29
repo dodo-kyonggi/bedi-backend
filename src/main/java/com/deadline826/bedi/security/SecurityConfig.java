@@ -1,6 +1,6 @@
 package com.deadline826.bedi.security;
 
-import com.deadline826.bedi.service.UserService;
+import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
-package com.deadline826.bedi.domain;
+package com.deadline826.bedi.Token.Domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.deadline826.bedi.login.Domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,12 +1,12 @@
-package com.deadline826.bedi.controller;
+package com.deadline826.bedi.login.Controller;
 
-import com.deadline826.bedi.domain.User;
-import com.deadline826.bedi.domain.dto.TokenDto;
-import com.deadline826.bedi.domain.dto.UserDto;
-import com.deadline826.bedi.domain.dto.UserRequestDto;
-import com.deadline826.bedi.service.GoogleService;
-import com.deadline826.bedi.service.KakaoService;
-import com.deadline826.bedi.service.UserService;
+import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
+import com.deadline826.bedi.login.Domain.Dto.UserRequestDto;
+import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.Service.GoogleService;
+import com.deadline826.bedi.login.Service.KakaoService;
+import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,10 @@
-package com.deadline826.bedi.service;
+package com.deadline826.bedi.login.Service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.deadline826.bedi.domain.Authority;
-import com.deadline826.bedi.domain.dto.UserDto;
+import com.deadline826.bedi.login.Domain.Authority;
+import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.deadline826.bedi.global;
+package com.deadline826.bedi.Handler;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
