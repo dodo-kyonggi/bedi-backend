@@ -59,26 +59,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.authenticationFilter = authenticationFilter;
     }
 
-
-
-    @Override
-    public User getUser(String id){
-        Optional<User> getUser = userRepository.findById(Long.parseLong(id));
-        User user = getUser.get();
-        return user;
-    }
-
-    //토큰에서 회원 아이디 추출
-    public String getUserId(String accesstoken) {
-
-//        String[] token = accesstoken.split(" ");
-
-        return Jwts.parser().setSigningKey(JWT_SECRET.getBytes(StandardCharsets.UTF_8))
-                .parseClaimsJws(accesstoken)
-                .getBody()
-                .getSubject();
-    }
-
     // 만료시간 추가
     public Date getExpireTime(String refreshtoken) {
 
@@ -88,11 +68,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .parseClaimsJws(refreshtoken)
                 .getBody()
                 .getExpiration();
-    }
-
-    // Request의 Header에서 token 값을 가져옵니다.
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(AUTHORIZATION);
     }
 
     // 로그인 처리 후 JWT토큰 발급
