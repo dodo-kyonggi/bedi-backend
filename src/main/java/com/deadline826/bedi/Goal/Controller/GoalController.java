@@ -1,6 +1,7 @@
 package com.deadline826.bedi.Goal.Controller;
 
 import com.deadline826.bedi.Goal.Domain.Goal;
+import com.deadline826.bedi.Goal.Service.GoalService;
 import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.Goal.Domain.Dto.DateDto;
 import com.deadline826.bedi.login.Service.UserService;
@@ -22,6 +23,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class GoalController {
 
     private final UserService userService;
+    private final GoalService goalService;
 
     @GetMapping
     public List<Goal> showGoals(@RequestBody DateDto dateDto, HttpServletRequest request){
@@ -38,7 +40,7 @@ public class GoalController {
 
 
         // 유저정보와 프론트에서 넘겨주는 오늘 날짜를 이용해 오늘의 목표 불러오기
-        List<Goal> todayGoals = userService.getTodayGoals(user,dateDto.getDate());
+        List<Goal> todayGoals = goalService.getTodayGoals(user,dateDto.getDate());
         return todayGoals;
 
 

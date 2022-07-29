@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface UserService {
 
-    List<Goal> getTodayGoals(User user, LocalDate date); // 오늘날짜의 목표 불러오기
+
 
     User getUser(String id); //유저정보 불러오기
 

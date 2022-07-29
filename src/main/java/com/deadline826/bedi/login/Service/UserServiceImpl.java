@@ -59,12 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.authenticationFilter = authenticationFilter;
     }
 
-    //추가
-    @Override
-    public List<Goal> getTodayGoals(User user, LocalDate date){
-        List<Goal> goalsOrderByTitleAsc = goalRepository.findByUserAndDateOrderByTitleAsc(user,date);
-        return goalsOrderByTitleAsc;
-    }
+
 
     @Override
     public User getUser(String id){
