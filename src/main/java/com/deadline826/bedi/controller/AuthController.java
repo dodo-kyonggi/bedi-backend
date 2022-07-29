@@ -1,5 +1,6 @@
 package com.deadline826.bedi.controller;
 
+import com.deadline826.bedi.domain.User;
 import com.deadline826.bedi.domain.dto.TokenDto;
 import com.deadline826.bedi.domain.dto.UserDto;
 import com.deadline826.bedi.domain.dto.UserRequestDto;
@@ -75,8 +76,8 @@ public class AuthController {
 
     // 내정보 가져오기
     @GetMapping("/my")
-    public String my(HttpServletRequest request) {
-        String token = userService.resolveToken(request);
-        return userService.getUserId(token);
+    public ResponseEntity<Long> my(HttpServletRequest request) {
+        User user = userService.getUserFromAccessToken();
+        return ResponseEntity.ok(user.getId());
     }
 }
