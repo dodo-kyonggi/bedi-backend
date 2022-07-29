@@ -32,4 +32,6 @@ public interface UserService {
     String getUserId(String token);  //토큰에서 회원 아이디 추출
 
     UserDetails loadUserById(Long id);
+
+    User getUserFromAccessToken();  //토큰에서 회원 객체 추출
 }
