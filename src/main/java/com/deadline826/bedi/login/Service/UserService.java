@@ -13,11 +13,7 @@ import java.util.List;
 
 public interface UserService {
 
-
-
-    User getUser(String id); //유저정보 불러오기
-
-    void setCustomAuthenticationFilter(CustomAuthenticationFilter authenticationFilter);
+    void setCustomAuthenticationFilter(CustomAuthenticationFilter authenticationFilter); //의존성 주입
 
     void saveUser(UserDto dto);   //유저정보 저장
 
@@ -27,11 +23,8 @@ public interface UserService {
 
     TokenDto refresh(String refreshToken);  //RefreshToken 으로 AccessToken 받아올때 사용
 
-    String resolveToken(HttpServletRequest request);   // Request의 Header에서 token 값을 가져옵니다.
-
-    String getUserId(String token);  //토큰에서 회원 아이디 추출
-
     UserDetails loadUserById(Long id);
 
     User getUserFromAccessToken();  //토큰에서 회원 객체 추출
+
 }

@@ -28,21 +28,12 @@ public class GoalController {
     @GetMapping
     public List<Goal> showGoals(@RequestBody DateDto dateDto, HttpServletRequest request){
 
-        // 헤더에 담겨오는 accessToken 가져오기
-        String authrizationHeader = request.getHeader(AUTHORIZATION);
-        String accessToken = authrizationHeader.substring(TOKEN_HEADER_PREFIX.length());
-
-
-
         // accessToken 으로부터 유저정보 불러오기
-        String userId = userService.getUserId(accessToken);
-        User user = userService.getUser(userId);
-
+        User user = userService.getUserFromAccessToken();
 
         // 유저정보와 프론트에서 넘겨주는 오늘 날짜를 이용해 오늘의 목표 불러오기
         List<Goal> todayGoals = goalService.getTodayGoals(user,dateDto.getDate());
         return todayGoals;
-
 
     }
 
