@@ -3,6 +3,7 @@ package com.deadline826.bedi.login.Controller;
 import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
 import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import com.deadline826.bedi.login.Domain.Dto.UserRequestDto;
+import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.login.Service.GoogleService;
 import com.deadline826.bedi.login.Service.KakaoService;
 import com.deadline826.bedi.login.Service.UserService;
@@ -75,11 +76,8 @@ public class AuthController {
 
     // 내정보 가져오기
     @GetMapping("/my")
-    public String my(HttpServletRequest request,HttpServletResponse response) {
-
-        // 헤더에 담겨오는 accessToken 가져오기
-        String authrizationHeader = userService.resolveToken(request);
-        String accessToken = authrizationHeader.substring(TOKEN_HEADER_PREFIX.length());
-        return userService.getUserId(accessToken);
+    public ResponseEntity<Long> my(HttpServletRequest request) {
+        User user = userService.getUserFromAccessToken();
+        return ResponseEntity.ok(user.getId());
     }
 }
