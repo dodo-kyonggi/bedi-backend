@@ -3,6 +3,8 @@ package com.deadline826.bedi.login.Domain;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.point.domain.Point;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -43,6 +45,7 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)
 
 
