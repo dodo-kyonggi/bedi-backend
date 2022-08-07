@@ -24,8 +24,8 @@ public interface GoalService {
     Goal findGoalById(Long id);  //아이디로 목표 찾기
 
     // 날짜와 거리가 유효한지 체크한다
-    void checkDateAndDistance(boolean isValidDate , boolean isValidDistance, boolean isEditable,
-                         HttpServletResponse response, Goal goal, GoalPostDto goalPostDto, User user)throws IOException;
+    boolean checkDateAndDistance(boolean isValidDate , boolean isValidDistance, boolean isEditable,
+                         Goal goal, GoalPostDto goalPostDto, User user);
 
     void removeGoal(Goal goal);  //목표 삭제
  }

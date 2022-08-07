@@ -26,8 +26,8 @@ public class GoalServiceImpl implements GoalService{
     private final GoalRepository goalRepository;
 
     @Override
-    public void checkDateAndDistance(boolean isValidDate , boolean isValidDistance,boolean isEditable,
-                                     HttpServletResponse response,Goal goal,GoalPostDto goalPostDto,User user) throws IOException {
+    public boolean checkDateAndDistance(boolean isValidDate , boolean isValidDistance,boolean isEditable,
+                                     Goal goal,GoalPostDto goalPostDto,User user) {
 
         //  거리, 날짜가 유효하다면
         if (isValidDistance && isValidDate && isEditable ){
@@ -39,15 +39,11 @@ public class GoalServiceImpl implements GoalService{
             goal.setY_coordinate(goalPostDto.getArrive_y_coordinate());
 
             saveGoal(goal);
+            return true;
 
         }
-
         else {
-            response.setStatus(SC_BAD_REQUEST);
-            response.setContentType(APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding("utf-8");
-            ErrorResponse errorResponse = new ErrorResponse(400, "위치 및 날짜를 확인해주세요");
-            new ObjectMapper().writeValue(response.getWriter(), errorResponse);
+            return false;
         }
     }
 
