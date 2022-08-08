@@ -99,7 +99,7 @@ public class GoalController {
         boolean isOk =goalService.checkDateAndDistance(isValidDate,isValidDistance,isEditable,goal,goalPostDto,user);
 
         if (!isOk){  // 유효하지 않다면
-            throw new CustomIOException("위치 및 날짜를 확인해주세요");  // IOException 이 발생했을때 오류메세지 넘겨주기
+            throw new CustomIOException("위치 및 날짜를 확인해주세요.");  // IOException 이 발생했을때 오류메세지 넘겨주기
         }
 
         return ResponseEntity.ok("수정 완료");
