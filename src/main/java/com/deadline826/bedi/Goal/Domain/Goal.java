@@ -1,7 +1,9 @@
 package com.deadline826.bedi.Goal.Domain;
 
 import com.deadline826.bedi.login.Domain.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -26,6 +28,10 @@ public class Goal {
 
     private String title;          // 제목
 
+    @ColumnDefault("false")
+    private Boolean success;
+
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;             // 연관관게 주인

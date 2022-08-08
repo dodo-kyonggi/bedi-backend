@@ -1,18 +1,18 @@
 package com.deadline826.bedi.Goal.Controller;
 
+import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Goal.Service.GoalService;
 import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.Goal.Domain.Dto.DateDto;
 import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 import static com.deadline826.bedi.security.JwtConstants.TOKEN_HEADER_PREFIX;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -38,5 +38,15 @@ public class GoalController {
 
     }
 
+
+    @PostMapping("/success")
+    public ResponseEntity<Goal> isSuccess(@RequestBody GoalRequestDto goalRequestDto) {
+
+        User user = userService.getUserFromAccessToken();
+
+        Goal goal = goalService.isSuccess(user, goalRequestDto);
+
+        return ResponseEntity.ok().body(goal);
+    }
 
 }
