@@ -30,7 +30,7 @@ public class AuthController {
     private final KakaoService kakaoService;
 
     @GetMapping(value = "/kakao" )
-    public ResponseEntity<TokenDto> returnco(@RequestParam String code) {
+    public ResponseEntity<TokenDto> returnco(@RequestParam String code, HttpServletResponse response) {
         //카카오 서버로 부터 사용자 정보 받아오기
         String accessToken = kakaoService.getAccessToken(code);
         UserDto userDto = kakaoService.getUserInfo(accessToken);
@@ -38,20 +38,20 @@ public class AuthController {
         userService.saveUser(userDto);
 
         // 카카오로 로그인 해서 JWT 받아오기
-        TokenDto tokenDto = userService.login(userDto);
+        TokenDto tokenDto = userService.login(userDto,response);
 
         return ResponseEntity.ok().body(tokenDto);
     }
 
     @PostMapping(value = "/google" )
-    public ResponseEntity<TokenDto> returnco(@RequestBody UserRequestDto userRequestDto) throws IOException, GeneralSecurityException {
+    public ResponseEntity<TokenDto> returnco(@RequestBody UserRequestDto userRequestDto, HttpServletResponse response) throws IOException, GeneralSecurityException {
         // 구글로부터 사용자 받아오기
         UserDto userDto = googleService.getUserInfo(userRequestDto.getCredential());
 
         userService.saveUser(userDto);
 
         // 카카오로 로그인 해서 JWT 받아오기
-        TokenDto tokenDto = userService.login(userDto);
+        TokenDto tokenDto = userService.login(userDto,response);
 
         return ResponseEntity.ok().body(tokenDto);
     }
