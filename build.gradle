@@ -51,6 +51,9 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+	// model mapper
+	implementation 'org.modelmapper:modelmapper:3.0.0'
+
 	// google api
 	implementation 'com.google.api-client:google-api-client:1.32.1'
 

@@ -1,5 +1,6 @@
 package com.deadline826.bedi.Goal.Service;
 
+import com.deadline826.bedi.Goal.Domain.Dto.GoalDto;
 import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Goal.exception.OutRangeOfGoalException;
@@ -9,13 +10,13 @@ import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.point.domain.Point;
 import com.deadline826.bedi.point.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,12 +24,16 @@ import java.util.Optional;
 public class GoalServiceImpl implements GoalService{
     private final GoalRepository goalRepository;
     private final PointRepository pointRepository;
+    private final ModelMapper modelMapper;
 
     //추가
     @Override
-    public List<Goal> getTodayGoals(User user, LocalDate date){
+    public List<GoalDto> getTodayGoals(User user, LocalDate date){
         List<Goal> goalsOrderByTitleAsc = goalRepository.findByUserAndDateOrderByTitleAsc(user,date);
-        return goalsOrderByTitleAsc;
+        List<GoalDto> goalDtosList = goalsOrderByTitleAsc.stream()
+                .map(goal -> modelMapper.map(goal, GoalDto.class))
+                .collect(Collectors.toList());
+        return goalDtosList;
     }
 
     private static Double distance(Double lat1, Double lon1, Double lat2, Double lon2) {
@@ -55,13 +60,13 @@ public class GoalServiceImpl implements GoalService{
     }
 
     @Override
-    public Goal isSuccess(User user, GoalRequestDto goalRequestDto) {
+    public GoalDto isSuccess(User user, GoalRequestDto goalRequestDto) {
 
             Goal goal = goalRepository.findById(goalRequestDto.getGoalId())
                     .orElseThrow(() -> new WrongGoalIDException("잘못된 목표 아이디 입니다."));
 
-            Double goalLat = goal.getX_coordinate();
-            Double goalLon = goal.getY_coordinate();
+            Double goalLat = goal.getLat();
+            Double goalLon = goal.getLon();
             Double nowLat = goalRequestDto.getNowLat();
             Double nowLon = goalRequestDto.getNowLon();
 
@@ -77,7 +82,7 @@ public class GoalServiceImpl implements GoalService{
             pointRepository.save(point);
             goal.setSuccess(true);
 
-            return goal;
+            return modelMapper.map(goal, GoalDto.class);
     }
 
 }

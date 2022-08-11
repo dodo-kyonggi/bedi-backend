@@ -3,7 +3,6 @@ package com.deadline826.bedi.login.Domain;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.point.domain.Point;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Setter
 public class User {
@@ -43,7 +41,6 @@ public class User {
         this.refreshToken = newToken;
     }
 
-    @JsonBackReference
     @OneToMany(mappedBy = "user")
     private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)
 
