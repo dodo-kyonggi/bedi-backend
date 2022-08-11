@@ -5,7 +5,7 @@ spring:
 
 
   redis:
-    host: bedi.c1g4vqvq6mqm.ap-northeast-2.rds.amazonaws.com
+    host: 43.200.109.85
     port: 6379
 
   security:
