@@ -5,7 +5,7 @@ spring:
 
 
   redis:
-    host: beingdiligent.tk
+    host: bedi.c1g4vqvq6mqm.ap-northeast-2.rds.amazonaws.com
     port: 6379
 
   security:
