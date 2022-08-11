@@ -4,12 +4,9 @@ import com.deadline826.bedi.SMS.Domain.Dto.PhoneNumberDto;
 import com.deadline826.bedi.SMS.Domain.Dto.SmsCertificationRequest;
 import com.deadline826.bedi.SMS.Service.SmsCertificationService;
 import com.deadline826.bedi.exception.AuthenticationNumberMismatchException;
-import com.deadline826.bedi.login.Service.CertificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Random;
 
 
 @RestController
