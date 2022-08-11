@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 로그인, 리프레시 요청이라면 모두 허용
         http.authorizeRequests().antMatchers("/","/auth/kakao", "/kakao/login", "/kakao/refresh").permitAll();
-        http.authorizeRequests().antMatchers("/auth/google","/google/refresh").permitAll();
+        http.authorizeRequests().antMatchers("/auth/google","/google/refresh","/message/send","/message/confirm").permitAll();
 
         //그 외는 토큰으로 인증 받아야함
         http.authorizeRequests().anyRequest().authenticated();

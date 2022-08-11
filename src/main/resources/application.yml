@@ -1,5 +1,13 @@
 spring:
 
+  api_key: "NCSYCO1EGUYE3K53"
+  api_secret: "T8TYLB7OE8V978SSBRXRSWBIIP8WAATK"
+
+
+  redis:
+    host: bedi.c1g4vqvq6mqm.ap-northeast-2.rds.amazonaws.com
+    port: 6379
+
   security:
     user:
       name: bedi

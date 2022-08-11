@@ -60,8 +60,10 @@ dependencies {
 	//phone auth
 	implementation group: 'net.nurigo', name: 'javaSDK', version: '2.2'
 
-//	compile group: 'net.nurigo', name: 'javaSDK', version: '2.2'
 
+
+	//REDIS
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 //tasks.named('test') {

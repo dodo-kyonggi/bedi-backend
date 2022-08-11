@@ -2,7 +2,9 @@ package com.deadline826.bedi.Handler;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.deadline826.bedi.exception.AuthenticationNumberMismatchException;
 import com.deadline826.bedi.exception.ErrorResponse;
+import com.deadline826.bedi.exception.SmsSendFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -32,4 +34,20 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(400, "유효하지 않은 Refresh Token 입니다.");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    //인증번호 불일치
+    @ExceptionHandler(AuthenticationNumberMismatchException.class)
+    public ResponseEntity<ErrorResponse> AuthenticationNumberMismatchException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    //전송실패
+    @ExceptionHandler(SmsSendFailedException.class)
+    public ResponseEntity<ErrorResponse> SmsSendFailedException(Exception e ) {
+        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
 }
