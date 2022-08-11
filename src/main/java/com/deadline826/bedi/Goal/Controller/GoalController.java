@@ -1,21 +1,18 @@
 package com.deadline826.bedi.Goal.Controller;
 
-import com.deadline826.bedi.Goal.Domain.Goal;
+import com.deadline826.bedi.Goal.Domain.Dto.GoalDto;
+import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Service.GoalService;
 import com.deadline826.bedi.login.Domain.User;
-import com.deadline826.bedi.Goal.Domain.Dto.DateDto;
 import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.List;
-
-import static com.deadline826.bedi.security.JwtConstants.TOKEN_HEADER_PREFIX;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/goal")
@@ -27,16 +24,26 @@ public class GoalController {
     private final GoalService goalService;
 
     @GetMapping
-    public List<Goal> showGoals(@RequestBody DateDto dateDto, HttpServletRequest request){
+    public ResponseEntity<List<GoalDto>> showGoals(@RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate date, HttpServletRequest request){
 
         // accessToken 으로부터 유저정보 불러오기
         User user = userService.getUserFromAccessToken();
 
         // 유저정보와 프론트에서 넘겨주는 오늘 날짜를 이용해 오늘의 목표 불러오기
-        List<Goal> todayGoals = goalService.getTodayGoals(user,dateDto.getDate());
-        return todayGoals;
+        List<GoalDto> todayGoals = goalService.getTodayGoals(user,date);
 
+        return ResponseEntity.ok().body(todayGoals);
     }
 
+
+    @PostMapping("/success")
+    public ResponseEntity<GoalDto> isSuccess(@RequestBody GoalRequestDto goalRequestDto) {
+
+        User user = userService.getUserFromAccessToken();
+
+        GoalDto goal = goalService.isSuccess(user, goalRequestDto);
+
+        return ResponseEntity.ok().body(goal);
+    }
 
 }

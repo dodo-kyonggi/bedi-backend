@@ -1,7 +1,9 @@
 package com.deadline826.bedi.Goal.Domain;
 
 import com.deadline826.bedi.login.Domain.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,7 +12,6 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Setter
 public class Goal {
@@ -19,12 +20,15 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate date= LocalDate.now();
+    private LocalDate date;
 
-    private Double x_coordinate;   // x 좌표값
-    private Double y_coordinate;   // y 좌표값
+    private Double lat;   // 위도
+    private Double lon;   // 경도
 
-    private String title;          // 제목
+    private String title; // 제목
+
+    @ColumnDefault("false")
+    private Boolean success;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
