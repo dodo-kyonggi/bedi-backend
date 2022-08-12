@@ -50,20 +50,20 @@ public class SmsCertificationService {
 
 
         Random random = new Random();
-//
-//        Message coolSms = new Message(api_key, api_secret);
+
+        Message coolSms = new Message(api_key, api_secret);
         String randomNumber = String.valueOf(100000 + random.nextInt(900000));
         String content = makeSmsContent(randomNumber);
-//        HashMap<String, String> params = makeParams(phone, content);
-//
-//        try {
-//            JSONObject result = coolSms.send(params);
-//            if (result.get("success_count").toString().equals("0")) {
-//                throw new SmsSendFailedException("전송실패");
-//            }
-//        } catch (CoolsmsException | SmsSendFailedException exception) {
-//            exception.printStackTrace();
-//        }
+        HashMap<String, String> params = makeParams(phone, content);
+
+        try {
+            JSONObject result = coolSms.send(params);
+            if (result.get("success_count").toString().equals("0")) {
+                throw new SmsSendFailedException("전송실패");
+            }
+        } catch (CoolsmsException | SmsSendFailedException exception) {
+            exception.printStackTrace();
+        }
 
         smsCertificationDao.createSmsCertification(phone, randomNumber);
     }
