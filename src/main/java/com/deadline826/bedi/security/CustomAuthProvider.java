@@ -1,6 +1,7 @@
 package com.deadline826.bedi.security;
 
 import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.Service.VerifyPasswordService;
 import com.deadline826.bedi.login.repository.UserRepository;
 import com.deadline826.bedi.login.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,26 +26,32 @@ public class CustomAuthProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final VerifyPasswordService verifyPasswordService;
     private final UserRepository userRepository;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Long id = (Long)authentication.getPrincipal();    // 카카오가 넘겨주는 랜덤 값 (id)
 
-        //UserServiceImpl 의 loadUserById 로 이동  - 기존 loadUserByUsername -> loadUserByUserId 로 수정 -
-        UserDetails userDetails = userService.loadUserById(id);
-        System.out.println("userDetails = " + userDetails);
-        Optional<User> byId = userRepository.findById(id);
-        String password = byId.get().getEmail();
+        String email = authentication.getPrincipal().toString();
 
-        // PW 검사,  UUID 와 인코딩 된 UUID를 디코딩하여 일치하는지 검사
+        // 이메일로 유저정보 불러오기
+        UserDetails userDetails = userService.loadUserByEmail(email);
+
+        // redis 에 저장된 값을 key(email) 를 이용해 가져온다
+        String password = verifyPasswordService.getTempPassword(email);
+
+
+        // PW 검사
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Provider - authenticate() : 비밀번호가 일치하지 않습니다.");
         }
 
+        // redis 에 저장된 값을 key(email) 를 이용해 삭제한다
+        verifyPasswordService.removeTempPassword(email);
+
         // Collections.EMPTY_LIST 를 통해 비밀번호 없이 인증가능하게 함
         //CustomAuthenticationFilter 의 attemptAuthentication 으로 복귀
-        return new UsernamePasswordAuthenticationToken(userDetails, null, Collections.EMPTY_LIST);
+        return new UsernamePasswordAuthenticationToken(email, null, Collections.EMPTY_LIST);
 
     }
 

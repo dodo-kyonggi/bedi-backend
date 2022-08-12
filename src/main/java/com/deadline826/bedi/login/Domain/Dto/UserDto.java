@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Transient;
+
 
 @Getter
 @AllArgsConstructor
@@ -16,9 +18,12 @@ public class UserDto {
     private Long id;     // 카카오가 넘겨주는 랜덤 값
     private String username;    // 사용자 이름
     private String password;
-    private String email;    //카카오 로그인 이메일
+    private String email;    // 로그인 이메일
+    private String phone;
 
-    private Authority authority;   //구글 또는 카카오
+
+
+//    private Authority authority;   //구글 또는 카카오
 
     public User toEntity() {
         return User.builder()
@@ -26,7 +31,8 @@ public class UserDto {
                 .username(username)
                 .email(email)
                 .password(password)
-                .authority(authority)
+                .phone(phone)
+//                .authority(authority)
                 .build();
     }
 

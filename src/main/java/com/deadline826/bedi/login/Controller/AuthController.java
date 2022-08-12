@@ -1,6 +1,7 @@
 package com.deadline826.bedi.login.Controller;
 
 import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
+import com.deadline826.bedi.exception.DuplicateEmailException;
 import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import com.deadline826.bedi.login.Domain.Dto.UserRequestDto;
 import com.deadline826.bedi.login.Domain.User;
@@ -31,7 +32,7 @@ public class AuthController {
 
     @GetMapping(value = "/kakao" )
     public ResponseEntity<TokenDto> returnco(@RequestParam String code, HttpServletResponse response,
-                                             HttpServletRequest request) {
+                                             HttpServletRequest request) throws DuplicateEmailException {
         //카카오 서버로 부터 사용자 정보 받아오기
         String accessToken = kakaoService.getAccessToken(code);
         UserDto userDto = kakaoService.getUserInfo(accessToken);

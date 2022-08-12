@@ -1,5 +1,4 @@
-package com.deadline826.bedi.SMS.Domain.Dto;
-
+package com.deadline826.bedi.login.Domain.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class PhoneNumberDto {
+public class LoginDto {
+    private String email;
+    private String password;
 
-    private String phone;    // 전화번호
 }

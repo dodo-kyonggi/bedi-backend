@@ -119,7 +119,7 @@ public class KakaoService  {
             userDto.setId(id); // 카카오에서 넘겨주는 id 값
             userDto.setUsername(username); // 사용자 이름
             userDto.setEmail(email); // 카카오에 등록된 이메일
-            userDto.setAuthority(Authority.KAKAO);
+//            userDto.setAuthority(Authority.KAKAO);
             userDto.setPassword(email); // 비번은 고정된 값인 email로 함
 
         } catch (IOException e) {

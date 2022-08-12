@@ -47,7 +47,7 @@ public class GoogleService {
             userDto.setEmail(email);
             userDto.setUsername(name);
             userDto.setPassword(email);
-            userDto.setAuthority(Authority.GOOGLE);
+//            userDto.setAuthority(Authority.GOOGLE);
 
         } else {
             log.debug("구글 ID 토큰이 유효하지 않습니다.");

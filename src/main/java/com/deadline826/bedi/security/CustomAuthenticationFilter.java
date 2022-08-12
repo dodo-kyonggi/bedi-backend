@@ -19,19 +19,21 @@ public class CustomAuthenticationFilter {
 
     public Authentication attemptAuthentication(UserDto userDto) throws AuthenticationException {
         try {
-            Long id = userDto.getId(); // 카카오가 넘겨주는 랜덤 값
+
+            String email = userDto.getEmail();
             String password = userDto.getPassword();
 
-            //id, password 로 토큰생성
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(id, password);
-            System.out.println("token = " + token);
+            //email, password 로 토큰생성
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
+
 
             //CustomAuthProvider 의 authenticate 에서 토큰을 검사
             Authentication authenticate = authenticationManager.authenticate(token);
-            System.out.println("authenticate = " + authenticate);
 
-            //여기까지 성공하면 KakaoService의 login 으로 값 리턴
-            return authenticationManager.authenticate(token);
+
+            // UserServiceImpl 의 login 으로 값 리턴
+            return authenticate;
+
         } catch (Exception e) {
             log.error(String.valueOf(e));
             return null;

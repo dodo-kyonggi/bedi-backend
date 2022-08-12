@@ -3,6 +3,7 @@ package com.deadline826.bedi.Handler;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.deadline826.bedi.exception.AuthenticationNumberMismatchException;
+import com.deadline826.bedi.exception.DuplicateEmailException;
 import com.deadline826.bedi.exception.ErrorResponse;
 import com.deadline826.bedi.exception.SmsSendFailedException;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,15 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    //이메일 중복
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> DuplicateEmailException(Exception e ) {
+        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
 
 
 }
