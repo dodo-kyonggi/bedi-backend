@@ -58,12 +58,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    //비번오류
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> BadCredentialsException(Exception e ) {
-        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
+
 
 
 

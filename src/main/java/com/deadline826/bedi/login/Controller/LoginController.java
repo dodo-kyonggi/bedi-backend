@@ -13,6 +13,7 @@ import com.deadline826.bedi.login.Service.UserService;
 import com.deadline826.bedi.login.Service.VerifyPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +53,8 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) throws AuthenticationNumberMismatchException {
+    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto)
+            throws AuthenticationNumberMismatchException {
 
         // 이메일로 유저를 불러와
         User user = userService.findUserByEmail(loginDto.getEmail());

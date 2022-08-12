@@ -127,6 +127,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } catch (AuthenticationException e) {
             throw new CustomAuthenticationException("로그인 잘못됨");
         }
+        catch (NullPointerException e) {
+            throw new CustomAuthenticationException("로그인 잘못됨");
+        }
     }
 
     @Override
