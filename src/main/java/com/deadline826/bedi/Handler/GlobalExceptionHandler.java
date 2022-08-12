@@ -8,6 +8,7 @@ import com.deadline826.bedi.exception.ErrorResponse;
 import com.deadline826.bedi.exception.SmsSendFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,6 +57,14 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    //비번오류
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> BadCredentialsException(Exception e ) {
+        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 
