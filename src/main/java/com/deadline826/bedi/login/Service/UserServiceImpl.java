@@ -179,8 +179,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        return user.get();
+        try {
+            Optional<User> user = userRepository.findByEmail(email);
+            return user.get();
+        }
+        catch (NoSuchElementException e){
+            throw new NoSuchElementException();
+        }
+
     }
 
 

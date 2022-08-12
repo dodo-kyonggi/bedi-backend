@@ -13,6 +13,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.NoSuchElementException;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,6 +60,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    //이메일 없음
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> NoSuchElementException() {
+        ErrorResponse errorResponse = new ErrorResponse(400, "이메일을 다시 확인 해주세요");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
 
 
