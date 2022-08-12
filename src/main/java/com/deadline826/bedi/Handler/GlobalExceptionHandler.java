@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     //인증번호 불일치
     @ExceptionHandler(AuthenticationNumberMismatchException.class)
     public ResponseEntity<ErrorResponse> AuthenticationNumberMismatchException(Exception e) {
-        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(401, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
