@@ -269,13 +269,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return TokenDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(newRefreshToken)
-                    .refreshTokenExpireTime(getExpireTime(newRefreshToken))    // 이 부분
+                    .refreshTokenExpireTime(getExpireTime(newRefreshToken))
                     .build();
         }
 
         return TokenDto.builder()
                 .accessToken(accessToken)
-                .refreshToken("유효기간이 충분합니다")   // 이 부분
+                .refreshToken("유효기간이 충분합니다")
                 .build();
 
 

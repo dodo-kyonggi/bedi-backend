@@ -1,5 +1,6 @@
 package com.deadline826.bedi.login.Controller;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.deadline826.bedi.SMS.Domain.Dto.PhoneNumberDto;
 import com.deadline826.bedi.SMS.Domain.Dto.SmsCertificationRequest;
 import com.deadline826.bedi.SMS.Service.SmsCertificationService;
@@ -74,7 +75,7 @@ public class LoginController {
 
     //refreshToken 을 이용하여 accessToken 가져오기
     @GetMapping("/refresh")
-    public ResponseEntity<TokenDto> refresh(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<TokenDto> refresh(HttpServletRequest request, HttpServletResponse response) throws TokenExpiredException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
             throw new RuntimeException("JWT Token이 존재하지 않습니다.");
@@ -94,4 +95,5 @@ public class LoginController {
         User user = userService.getUserFromAccessToken();
         return ResponseEntity.ok(user.getId());
     }
+
 }
