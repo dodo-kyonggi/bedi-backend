@@ -75,7 +75,7 @@ public class LoginController {
 
     //refreshToken 을 이용하여 accessToken 가져오기
     @GetMapping("/refresh")
-    public ResponseEntity<TokenDto> refresh(HttpServletRequest request, HttpServletResponse response) throws TokenExpiredException {
+    public ResponseEntity<TokenDto> refresh(HttpServletRequest request, HttpServletResponse response) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
             throw new RuntimeException("JWT Token이 존재하지 않습니다.");
