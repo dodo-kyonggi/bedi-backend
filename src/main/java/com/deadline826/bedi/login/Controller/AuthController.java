@@ -30,34 +30,34 @@ public class AuthController {
     private final GoogleService googleService;
     private final KakaoService kakaoService;
 
-    @GetMapping(value = "/kakao" )
-    public ResponseEntity<TokenDto> returnco(@RequestParam String code, HttpServletResponse response,
-                                             HttpServletRequest request) throws DuplicateEmailException {
-        //카카오 서버로 부터 사용자 정보 받아오기
-        String accessToken = kakaoService.getAccessToken(code);
-        UserDto userDto = kakaoService.getUserInfo(accessToken);
-
-        userService.saveUser(userDto);
-
-        // 카카오로 로그인 해서 JWT 받아오기
-        TokenDto tokenDto = userService.login(userDto);
-
-        return ResponseEntity.ok().body(tokenDto);
-    }
-
-    @PostMapping(value = "/google" )
-    public ResponseEntity<TokenDto> returnco(@RequestBody UserRequestDto userRequestDto, HttpServletResponse response,
-                                             HttpServletRequest request) throws IOException, GeneralSecurityException {
-        // 구글로부터 사용자 받아오기
-        UserDto userDto = googleService.getUserInfo(userRequestDto.getCredential());
-
-        userService.saveUser(userDto);
-
-        // 카카오로 로그인 해서 JWT 받아오기
-        TokenDto tokenDto = userService.login(userDto);
-
-        return ResponseEntity.ok().body(tokenDto);
-    }
+//    @GetMapping(value = "/kakao" )
+//    public ResponseEntity<TokenDto> returnco(@RequestParam String code, HttpServletResponse response,
+//                                             HttpServletRequest request) throws DuplicateEmailException {
+//        //카카오 서버로 부터 사용자 정보 받아오기
+//        String accessToken = kakaoService.getAccessToken(code);
+//        UserDto userDto = kakaoService.getUserInfo(accessToken);
+//
+//        userService.saveUser(userDto);
+//
+//        // 카카오로 로그인 해서 JWT 받아오기
+////        TokenDto tokenDto = userService.login(userDto);
+////
+////        return ResponseEntity.ok().body(tokenDto);
+//    }
+//
+//    @PostMapping(value = "/google" )
+//    public ResponseEntity<TokenDto> returnco(@RequestBody UserRequestDto userRequestDto, HttpServletResponse response,
+//                                             HttpServletRequest request) throws IOException, GeneralSecurityException {
+//        // 구글로부터 사용자 받아오기
+//        UserDto userDto = googleService.getUserInfo(userRequestDto.getCredential());
+//
+//        userService.saveUser(userDto);
+//
+//        // 카카오로 로그인 해서 JWT 받아오기
+//        TokenDto tokenDto = userService.login(userDto);
+//
+//        return ResponseEntity.ok().body(tokenDto);
+//    }
 
     //refreshToken 을 이용하여 accessToken 가져오기
     @GetMapping("/refresh")
