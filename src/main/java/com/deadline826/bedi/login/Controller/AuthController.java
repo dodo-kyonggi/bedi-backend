@@ -59,26 +59,26 @@ public class AuthController {
 //        return ResponseEntity.ok().body(tokenDto);
 //    }
 
-    //refreshToken 을 이용하여 accessToken 가져오기
-    @GetMapping("/refresh")
-    public ResponseEntity<TokenDto> refresh(HttpServletRequest request, HttpServletResponse response) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
-            throw new RuntimeException("JWT Token이 존재하지 않습니다.");
-        }
-        String refreshToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
-        TokenDto tokens = userService.refresh(refreshToken);  //refreshToken 을 넣으면 accessToken 이 반환 됨
-        response.setHeader(AT_HEADER, tokens.getAccessToken());   //위의 accessToken 을 헤더에 넣고
-        if (tokens.getRefreshToken() != null) {              // refreshToken 의 만료기간이 다가와서 새로 받은 refreshToken 이 있다면
-            response.setHeader(RT_HEADER, tokens.getRefreshToken());  // refreshToken 도 같이 헤더에 넣는다.
-        }
-        return ResponseEntity.ok(tokens);   //화면에 출력
-    }
-
-    // 내정보 가져오기
-    @GetMapping("/my")
-    public ResponseEntity<Long> my(HttpServletRequest request) {
-        User user = userService.getUserFromAccessToken();
-        return ResponseEntity.ok(user.getId());
-    }
+//    //refreshToken 을 이용하여 accessToken 가져오기
+//    @GetMapping("/refresh")
+//    public ResponseEntity<TokenDto> refresh(HttpServletRequest request, HttpServletResponse response) {
+//        String authorizationHeader = request.getHeader(AUTHORIZATION);
+//        if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
+//            throw new RuntimeException("JWT Token이 존재하지 않습니다.");
+//        }
+//        String refreshToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
+//        TokenDto tokens = userService.refresh(refreshToken);  //refreshToken 을 넣으면 accessToken 이 반환 됨
+//        response.setHeader(AT_HEADER, tokens.getAccessToken());   //위의 accessToken 을 헤더에 넣고
+//        if (tokens.getRefreshToken() != null) {              // refreshToken 의 만료기간이 다가와서 새로 받은 refreshToken 이 있다면
+//            response.setHeader(RT_HEADER, tokens.getRefreshToken());  // refreshToken 도 같이 헤더에 넣는다.
+//        }
+//        return ResponseEntity.ok(tokens);   //화면에 출력
+//    }
+//
+//    // 내정보 가져오기
+//    @GetMapping("/my")
+//    public ResponseEntity<Long> my(HttpServletRequest request) {
+//        User user = userService.getUserFromAccessToken();
+//        return ResponseEntity.ok(user.getId());
+//    }
 }
