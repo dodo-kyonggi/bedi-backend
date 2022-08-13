@@ -1,5 +1,6 @@
 package com.deadline826.bedi.security;
 
+import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +18,11 @@ public class CustomAuthenticationFilter {
         this.authenticationManager = authenticationManager;
     }
 
-    public Authentication attemptAuthentication(UserDto userDto) throws AuthenticationException {
+    public Authentication attemptAuthentication(LoginDto loginDto) throws AuthenticationException {
         try {
 
-            String email = userDto.getEmail();
-            String password = userDto.getPassword();
+            String email = loginDto.getEmail();
+            String password = loginDto.getPassword();
 
             //email, password 로 토큰생성
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);

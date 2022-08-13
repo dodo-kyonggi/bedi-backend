@@ -3,6 +3,7 @@ package com.deadline826.bedi.login.Service;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.exception.DuplicateEmailException;
+import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
 import com.deadline826.bedi.login.Domain.Dto.UserDto;
@@ -20,7 +21,7 @@ public interface UserService {
 
     void saveUser(UserDto dto) throws DuplicateEmailException;   //유저정보 저장
 
-    TokenDto login(UserDto dto);
+    TokenDto login(LoginDto loginDto);
 
     void updateRefreshToken(String id, RefreshToken refreshToken);  //RefreshToken 업데이트
 

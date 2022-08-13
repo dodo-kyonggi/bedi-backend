@@ -57,22 +57,22 @@ public class LoginController {
             throws AuthenticationNumberMismatchException {
 
         // 이메일로 유저를 불러와
-        User user = userService.findUserByEmail(loginDto.getEmail());
+        //User user = userService.findUserByEmail(loginDto.getEmail());
 
 
-        // dto로 변환하고
-        UserDto userDto = new UserDto();
-        userDto.setEmail(user.getEmail());
-        userDto.setUsername(user.getUsername());
-        userDto.setPhone(user.getPhone());
-        userDto.setPassword(loginDto.getPassword());
-        userDto.setId(user.getId());
+//        // dto로 변환하고
+//        UserDto userDto = new UserDto();
+//        userDto.setEmail(user.getEmail());
+//        userDto.setUsername(user.getUsername());
+//        userDto.setPhone(user.getPhone());
+//        userDto.setPassword(loginDto.getPassword());
+//        userDto.setId(user.getId());
 
         // redis 를 아용하여 로그인 정보를 1분간 임시저장한다 (PW 검사시 이용됨)
         verifyPasswordService.makeTempPasswordStorage(loginDto.getEmail(),loginDto.getPassword());
 
         //변환된 dto로 로그인 진행
-        TokenDto loginToken = userService.login(userDto);
+        TokenDto loginToken = userService.login(loginDto);
 
 
         // 토큰정보를 반환한다

@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.exception.DuplicateEmailException;
+import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.User;
 
 import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
@@ -73,11 +74,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // 로그인 처리 후 JWT토큰 발급
     //return 쪽 수정했습니다
-    public TokenDto login(UserDto userDto) {
+    public TokenDto login(LoginDto loginDto) {
         try {
 
             //CustomAuthenticationFilter 의 attemptAuthentication 으로 이동
-            Authentication authentication = authenticationFilter.attemptAuthentication(userDto);
+            Authentication authentication = authenticationFilter.attemptAuthentication(loginDto);
 
             //검증을 마친 이메일 정보
             String email = authentication.getPrincipal().toString();
@@ -91,7 +92,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String accessToken = JWT.create()
                     .withSubject(random_id)  //  랜덤 값
                     .withExpiresAt(new Date(System.currentTimeMillis() + AT_EXP_TIME))  // 토큰 만료시간
-                    .withClaim("username", userDto.getUsername())   //사용자 이름
+                    .withClaim("username",  user.get().getUsername())   //사용자 이름
                     .withIssuedAt(new Date(System.currentTimeMillis()))  // 토큰 생성시간
                     .sign(Algorithm.HMAC256(JWT_SECRET));  //JWT_SECRET 키로 암호화
             String refreshToken = JWT.create()
