@@ -6,7 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Token.Domain.RefreshToken;
+//import com.deadline826.bedi.Token.Domain.RefreshToken;
+import com.deadline826.bedi.Token.Service.RefreshTokenCertificationService;
 import com.deadline826.bedi.exception.DuplicateEmailException;
 import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.User;
@@ -16,7 +17,7 @@ import com.deadline826.bedi.login.Domain.Dto.UserDto;
 
 import com.deadline826.bedi.exception.CustomAuthenticationException;
 import com.deadline826.bedi.Goal.repository.GoalRepository;
-import com.deadline826.bedi.Token.repository.RefreshTokenRepository;
+//import com.deadline826.bedi.Token.repository.RefreshTokenRepository;
 import com.deadline826.bedi.login.Service.UserService;
 import com.deadline826.bedi.login.repository.UserRepository;
 
@@ -51,10 +52,11 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    //private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private CustomAuthenticationFilter authenticationFilter;
     private final GoalRepository goalRepository;
+    private final RefreshTokenCertificationService refreshTokenCertificationService;
 
     @Override
     public void setCustomAuthenticationFilter(CustomAuthenticationFilter authenticationFilter) {
@@ -85,38 +87,41 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
             //검증을 마친 이메일 정보로 유저 정보 가져오기
             Optional<User> user = userRepository.findByEmail(email);
-            String random_id = user.get().getId().toString();
+            String user_id = user.get().getId().toString();
 
 
             //토큰 생성
             String accessToken = JWT.create()
-                    .withSubject(random_id)  //  랜덤 값
+                    .withSubject(user_id)  //  랜덤 값
                     .withExpiresAt(new Date(System.currentTimeMillis() + AT_EXP_TIME))  // 토큰 만료시간
                     .withClaim("username",  user.get().getUsername())   //사용자 이름
                     .withIssuedAt(new Date(System.currentTimeMillis()))  // 토큰 생성시간
                     .sign(Algorithm.HMAC256(JWT_SECRET));  //JWT_SECRET 키로 암호화
             String refreshToken = JWT.create()
-                    .withSubject(random_id)
+                    .withSubject(user_id)
                     .withExpiresAt(new Date(System.currentTimeMillis() + RT_EXP_TIME))
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .sign(Algorithm.HMAC256(JWT_SECRET));
 
             // Refresh Token DB에 저장
+//
+//            RefreshToken remainRefreshToken = user.get().getRefreshToken();
+//            if (remainRefreshToken!=null){
+//                remainRefreshToken.setToken(refreshToken);
+//            }
+//
+//            else{
+//                RefreshToken newRefreshToken = new RefreshToken();
+//                newRefreshToken.setToken(refreshToken);
+//                RefreshToken save = refreshTokenRepository.save(newRefreshToken);
+//
+//                //RefreshToken 의 기본키를 user 의 외래키로 설정
+//                updateRefreshToken(random_id, save);
+//            }
 
-            RefreshToken remainRefreshToken = user.get().getRefreshToken();
-            if (remainRefreshToken!=null){
-                remainRefreshToken.setToken(refreshToken);
-            }
 
-            else{
-                RefreshToken newRefreshToken = new RefreshToken();
-                newRefreshToken.setToken(refreshToken);
-                RefreshToken save = refreshTokenRepository.save(newRefreshToken);
-
-                //RefreshToken 의 기본키를 user 의 외래키로 설정
-                updateRefreshToken(random_id, save);
-            }
-
+            // Refresh Token redis 에 저장
+            refreshTokenCertificationService.saveRefreshToken(user_id,refreshToken);
 
 
             return TokenDto.builder()
@@ -211,11 +216,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // =============== TOKEN ============ //
 
-    @Override
-    public void updateRefreshToken(String id, RefreshToken refreshToken) {
-        User user = userRepository.findById((Long.parseLong( id))).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        user.updateRefreshToken(refreshToken);
-    }
+//    @Override
+//    public void updateRefreshToken(String id, RefreshToken refreshToken) {
+//        User user = userRepository.findById((Long.parseLong( id))).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+//        user.updateRefreshToken(refreshToken);
+//    }
 
 
     @Override
@@ -246,9 +251,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        if (!user.getRefreshToken().getToken().equals(refreshToken)) {
+        if (!refreshTokenCertificationService.findRefreshToken(id).equals(refreshToken) ){
             throw new JWTVerificationException("유효하지 않은 Refresh Token 입니다.");
         }
+
+//        if (!user.getRefreshToken().getToken().equals(refreshToken)) {
+//            throw new JWTVerificationException("유효하지 않은 Refresh Token 입니다.");
+//        }
         String accessToken = JWT.create()
                 .withSubject(user.getId().toString())
                 .withExpiresAt(new Date(now + AT_EXP_TIME))
@@ -264,7 +273,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     .withSubject(user.getId().toString())  // 카카오가 넘겨주는 랜덤 값
                     .withExpiresAt(new Date(now + RT_EXP_TIME))
                     .sign(Algorithm.HMAC256(JWT_SECRET));
-            user.getRefreshToken().setToken(newRefreshToken);
+//            user.getRefreshToken().setToken(newRefreshToken);
+            refreshTokenCertificationService.saveRefreshToken(id,newRefreshToken);
 
             return TokenDto.builder()
                     .accessToken(accessToken)

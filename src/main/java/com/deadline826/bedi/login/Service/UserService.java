@@ -1,7 +1,7 @@
 package com.deadline826.bedi.login.Service;
 
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Token.Domain.RefreshToken;
+//import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.exception.DuplicateEmailException;
 import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.User;
@@ -23,7 +23,7 @@ public interface UserService {
 
     TokenDto login(LoginDto loginDto);
 
-    void updateRefreshToken(String id, RefreshToken refreshToken);  //RefreshToken 업데이트
+//    void updateRefreshToken(String id, RefreshToken refreshToken);  //RefreshToken 업데이트
 
     TokenDto refresh(String refreshToken);  //RefreshToken 으로 AccessToken 받아올때 사용
 

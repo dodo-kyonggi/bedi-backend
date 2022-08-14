@@ -23,25 +23,25 @@ public class RefreshTokenCertificationService {
 
     private final RefreshTokenCertificationDao refreshTokenCertificationDao;
 
-    public void saveRefreshToken(Long id, String refreshToken) {
+    public void saveRefreshToken(String id, String refreshToken) {
 
         refreshTokenCertificationDao.saveRefreshTokenCertification(id,refreshToken);
 
     }
 
-    public String findRefreshToken(Long id) {
+    public String findRefreshToken(String id) {
 
         return  refreshTokenCertificationDao.getRefreshTokenCertification(id);
 
     }
 
-    public void removeRefreshToken(Long id) {
+    public void removeRefreshToken(String id) {
 
         refreshTokenCertificationDao.removeRefreshTokenCertification(id);
 
     }
 
-    public boolean hasRefreshToken(Long id) {
+    public boolean hasRefreshToken(String id) {
 
         return refreshTokenCertificationDao.hasKey(id);
 

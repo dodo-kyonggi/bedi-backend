@@ -1,7 +1,7 @@
 package com.deadline826.bedi.login.Domain;
 
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Token.Domain.RefreshToken;
+//import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.point.domain.Point;
 import lombok.*;
 
@@ -36,14 +36,14 @@ public class User {
 //    @Enumerated(EnumType.STRING)
 //    private Authority authority;
 
-    @OneToOne
-    @JoinColumn (name = "refresh_id")
-    private RefreshToken refreshToken;
+//    @OneToOne
+//    @JoinColumn (name = "refresh_id")
+//    private RefreshToken refreshToken;
 
 
-    public void updateRefreshToken(RefreshToken newToken) {
-        this.refreshToken = newToken;
-    }
+//    public void updateRefreshToken(RefreshToken newToken) {
+//        this.refreshToken = newToken;
+//    }
 
     @OneToMany(mappedBy = "user")
     private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)
