@@ -1,19 +1,15 @@
 package com.deadline826.bedi.Goal.Domain;
 
 import com.deadline826.bedi.login.Domain.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
-@Setter
 public class Goal {
 
     @Id
@@ -22,13 +18,35 @@ public class Goal {
 
     private LocalDate date;
 
-    private Double x_coordinate;   // x 좌표값
-    private Double y_coordinate;   // y 좌표값
+    private Double lat;   // 위도
+    private Double lon;   // 경도
 
-    private String title;          // 제목
+    private String title; // 제목
+
+    private Boolean success;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User user;             // 연관관게 주인
+
+    @Builder
+    public Goal(LocalDate date, Double lat, Double lon, String title, User user) {
+        this.date = date;
+        this.lat = lat;
+        this.lon = lon;
+        this.title = title;
+        this.success = false;
+        this.user = user;
+    }
+
+    public void update(LocalDate date, Double lat, Double lon, String title) {
+        this.date = date;
+        this.lat = lat;
+        this.lon = lon;
+        this.title = title;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
 }

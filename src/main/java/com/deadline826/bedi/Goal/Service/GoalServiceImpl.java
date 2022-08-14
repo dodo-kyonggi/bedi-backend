@@ -1,138 +1,188 @@
 package com.deadline826.bedi.Goal.Service;
 
 import com.deadline826.bedi.Goal.Domain.Dto.GoalPostDto;
+import com.deadline826.bedi.Goal.Domain.Dto.GoalDto;
+import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Domain.Goal;
+import com.deadline826.bedi.Goal.exception.OutRangeOfGoalException;
+import com.deadline826.bedi.Goal.exception.PastModifyException;
+import com.deadline826.bedi.Goal.exception.TooCloseException;
+import com.deadline826.bedi.Goal.exception.WrongGoalIDException;
 import com.deadline826.bedi.Goal.repository.GoalRepository;
-import com.deadline826.bedi.exception.ErrorResponse;
 import com.deadline826.bedi.login.Domain.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.deadline826.bedi.point.domain.Point;
+import com.deadline826.bedi.point.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class GoalServiceImpl implements GoalService{
+public class GoalServiceImpl implements GoalService {
+
     private final GoalRepository goalRepository;
+    private final PointRepository pointRepository;
+    private final ModelMapper modelMapper;
 
+    /**
+     * 현재 날짜의 목표를 보여준다.
+     * @param user 사용자
+     * @param date 현재 날짜
+     * @return List<GoalDto>
+     */
     @Override
-    public boolean checkDateAndDistance(boolean isValidDate , boolean isValidDistance,boolean isEditable,
-                                     Goal goal,GoalPostDto goalPostDto,User user) {
-
-        //  거리, 날짜가 유효하다면
-        if (isValidDistance && isValidDate && isEditable ){
-
-            goal.setDate(goalPostDto.getDate());
-            goal.setTitle(goalPostDto.getTitle());
-            goal.setUser(user);
-            goal.setX_coordinate(goalPostDto.getArrive_x_coordinate());
-            goal.setY_coordinate(goalPostDto.getArrive_y_coordinate());
-
-            saveGoal(goal);
-            return true;
-
-        }
-        else {
-            return false;
-        }
-    }
-
-
-    @Override
-    public Goal findGoalById(Long id){
-        Optional<Goal> findGoal = goalRepository.findById(id);
-        return findGoal.get();
-    }
-
-    @Override
-    public boolean isValidDistance(GoalPostDto goalPostDto){
-
-        Double meter = distance(goalPostDto, "meter");
-
-        if(meter >=20 ){
-            return true;
-
-        }
-        else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isValidDate(LocalDate date){
-        if(date.compareTo(LocalDate.now()) >=0 ){
-            return true;
-
-        }
-        else {
-            return false;
-        }
-    }
-
-
-
-    @Override
-    public List<Goal> getTodayGoals(User user, LocalDate date){
+    public List<GoalDto> getTodayGoals(User user, LocalDate date){
         List<Goal> goalsOrderByTitleAsc = goalRepository.findByUserAndDateOrderByTitleAsc(user,date);
-        return goalsOrderByTitleAsc;
+        List<GoalDto> goalDtosList = goalsOrderByTitleAsc.stream()
+                .map(goal -> modelMapper.map(goal, GoalDto.class))
+                .collect(Collectors.toList());
+        return goalDtosList;
     }
 
-
+    /**
+     * 목표 달성 여부
+     * DB에서 목표 아이디를 통해 목표를 꺼낸다.
+     * 예외 : DB에 없는 목표 아이디가 들어왔다. 현재 위치와 목표 위치가 50m를 넘었다.
+     * 20 포인트 적립. 목표 성취로 변경.
+     * @param user 사용자
+     * @param goalRequestDto (목표 아이디, 현재 위치)
+     * @return GoalDto (목표 아이디, 날짜, 제목, 목표 위치)
+     */
     @Override
-    public void saveGoal(Goal goal){
+    public GoalDto isSuccess(User user, GoalRequestDto goalRequestDto) {
+
+            Goal goal = goalRepository.findById(goalRequestDto.getGoalId())
+                    .orElseThrow(() -> new WrongGoalIDException("잘못된 목표 아이디 입니다."));
+
+            LocalDate date = goal.getDate();
+            if (date.compareTo(LocalDate.now()) < 0) {
+                throw new PastModifyException("과거 날짜의 목표는 달성할 수 없습니다.");
+            }
+
+            Double goalLat = goal.getLat();
+            Double goalLon = goal.getLon();
+            Double nowLat = goalRequestDto.getNowLat();
+            Double nowLon = goalRequestDto.getNowLon();
+
+            Double distance = distance(goalLat, goalLon, nowLat, nowLon);
+
+            // 사용자가 목표 범위(50m) 이내에 존재 안함
+            if (Double.compare(distance, 50.0) > 0) throw new OutRangeOfGoalException("목표 범위로부터 너무 멉니다.");
+
+            Point point = Point.builder()
+                    .user(user)
+                    .reward(20)
+                    .build();
+            pointRepository.save(point);
+            goal.setSuccess(true);
+
+            return modelMapper.map(goal, GoalDto.class);
+    }
+
+    /**
+     * 목표 저장
+     * 예외 : 날짜가 현재보다 과거이다. 목표 위치와 현재 위치가 10m 이내이다.
+     * 예외 발생하지 않으면 DB에 저장
+     * @param goalPostDto (날짜, 제목, 목표 위치, 현재 위치)
+     */
+    @Override
+    public GoalDto createGoal(User user, GoalPostDto goalPostDto) {
+        LocalDate date = goalPostDto.getDate();
+
+        if (date.compareTo(LocalDate.now()) < 0) {
+            throw new PastModifyException("과거 날짜의 목표는 생성할 수 없습니다.");
+        }
+
+        Double goalLat = goalPostDto.getArrive_lat();
+        Double goalLon = goalPostDto.getArrive_lon();
+        Double nowLat = goalPostDto.getStart_lat();
+        Double nowLon = goalPostDto.getStart_lon();
+
+        Double distance = distance(goalLat, goalLon, nowLat, nowLon);
+
+        if (distance.compareTo(10.0) <= 0) { // 10m 이내일 시 에러
+            throw new TooCloseException("목표로부터 거리가 너무 가깝습니다.");
+        }
+
+        Goal goal = goalPostDto.toEntity(user);
+
         goalRepository.save(goal);
+
+        return modelMapper.map(goal, GoalDto.class);
     }
 
+    // 목표 수정정
+   @Override
+    public GoalDto updateGoal(GoalPostDto goalPostDto) {
+        Goal goal = goalRepository.findById(goalPostDto.getGoalId())
+                .orElseThrow(() -> new WrongGoalIDException("잘못된 목표 아이디 입니다."));
+
+        LocalDate date = goalPostDto.getDate();
+
+        if (date.compareTo(LocalDate.now()) < 0) {
+            throw new PastModifyException("과거 날짜의 목표는 생성할 수 없습니다.");
+        }
+
+        Double goalLat = goalPostDto.getArrive_lat();
+        Double goalLon = goalPostDto.getArrive_lon();
+        Double nowLat = goalPostDto.getStart_lat();
+        Double nowLon = goalPostDto.getStart_lon();
+
+        Double distance = distance(goalLat, goalLon, nowLat, nowLon);
+
+        if (distance.compareTo(10.0) <= 0) {
+            throw new TooCloseException("목표로부터 거리가 너무 가깝습니다.");
+        }
+
+        goal.update(date, goalLat, goalLon, goalPostDto.getTitle());
+
+        return modelMapper.map(goal, GoalDto.class);
+    }
+
+    // 목표 삭제
     @Override
-    public void removeGoal(Goal goal){ goalRepository.delete(goal); }
+    public void removeGoal(Long goalId){
 
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new WrongGoalIDException("잘못된 목표 아이디입니다."));
 
+        LocalDate date = goal.getDate();
 
-    // 두 지점간의 거리 계산    Latitude = Y , Longitude = X
-    @Override
-    public Double distance(GoalPostDto goalPostDto, String unit) {
+        if (date.compareTo(LocalDate.now()) < 0) {
+            throw new PastModifyException("과거 날짜의 목표는 생성할 수 없습니다.");
+        }
 
-        Double lon1 = goalPostDto.getArrive_x_coordinate();
-        Double lat1 = goalPostDto.getArrive_y_coordinate();
+        goalRepository.delete(goal);
+    }
 
-        Double lon2 = goalPostDto.getStart_x_coordinate();
-        Double lat2 = goalPostDto.getStart_y_coordinate();
+    // 거리 meter 계산
+    private static Double distance(Double lat1, Double lon1, Double lat2, Double lon2) {
 
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        Double theta = lon1 - lon2;
+        Double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
 
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
 
-        if (unit == "kilometer") {
-            dist = dist * 1.609344;
-        } else if(unit == "meter"){
-            dist = dist * 1609.344;
-        }
+        return dist * 1609.344;
 
-        return (dist);
     }
 
-
     // This function converts decimal degrees to radians
-    private static double deg2rad(double deg) {
+    private static Double deg2rad(Double deg) {
         return (deg * Math.PI / 180.0);
     }
 
     // This function converts radians to decimal degrees
-    private static double rad2deg(double rad) {
+    private static Double rad2deg(Double rad) {
         return (rad * 180 / Math.PI);
     }
-
 }

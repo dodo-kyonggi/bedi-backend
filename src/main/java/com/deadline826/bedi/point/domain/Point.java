@@ -1,12 +1,15 @@
 package com.deadline826.bedi.point.domain;
 
 import com.deadline826.bedi.login.Domain.User;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@RequiredArgsConstructor
 @Table (name="point")
 public class Point {
 
@@ -22,6 +25,12 @@ public class Point {
     @CreatedDate
     private LocalDate date;
 
-    private int reward;
+    private Integer reward;
+
+    @Builder
+    public Point(User user, Integer reward) {
+        this.user = user;
+        this.reward = reward;
+    }
 
 }
