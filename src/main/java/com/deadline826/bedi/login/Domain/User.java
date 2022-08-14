@@ -3,6 +3,8 @@ package com.deadline826.bedi.login.Domain;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Token.Domain.RefreshToken;
 import com.deadline826.bedi.point.domain.Point;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,8 +36,6 @@ public class User {
     @OneToOne
     @JoinColumn (name = "refresh_id")
     private RefreshToken refreshToken;
-
-//    private String refreshToken;
 
     public void updateRefreshToken(RefreshToken newToken) {
         this.refreshToken = newToken;

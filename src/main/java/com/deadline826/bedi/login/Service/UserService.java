@@ -8,6 +8,7 @@ import com.deadline826.bedi.login.Domain.Dto.UserDto;
 import com.deadline826.bedi.security.CustomAuthenticationFilter;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface UserService {
 
     void saveUser(UserDto dto);   //유저정보 저장
 
-    TokenDto login(UserDto dto);
+    TokenDto login(UserDto dto, HttpServletResponse response);
 
     void updateRefreshToken(String username, RefreshToken refreshToken);  //RefreshToken 업데이트
 

@@ -37,10 +37,12 @@ import java.util.*;
 
 import static com.deadline826.bedi.security.JwtConstants.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import io.jsonwebtoken.Jwts;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Transactional
@@ -72,17 +74,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // 로그인 처리 후 JWT토큰 발급
     //return 쪽 수정했습니다
-    public TokenDto login(UserDto userDto) {
+    public TokenDto login(UserDto userDto, HttpServletResponse response) {
         try {
             //CustomAuthenticationFilter 의 attemptAuthentication 으로 이동
             //request 에는  id, password 정보가 들어있음
             Authentication authentication = authenticationFilter.attemptAuthentication(userDto);
 
+
+
             // springframework.security.core.userdetails
             org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
             String id = user.getUsername();
 
-            Object principal = authentication.getPrincipal();
+
+
 
             Optional<User> userId = userRepository.findById(Long.parseLong(id));
             String kakao_random_id = userId.get().getId().toString();
@@ -116,6 +121,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 //RefreshToken 의 기본키를 user 의 외래키로 설정
                 updateRefreshToken(kakao_random_id, save);
             }
+
+            // Access Token , Refresh Token 프론트에 Response Header로 전달
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("utf-8");
+            response.setHeader(AT_HEADER, accessToken);
+            response.setHeader(RT_HEADER, refreshToken);
 
 
 
