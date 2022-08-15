@@ -1,60 +1,77 @@
 package com.deadline826.bedi.login.Controller;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.deadline826.bedi.SMS.Domain.Dto.PhoneNumberDto;
+import com.deadline826.bedi.SMS.Domain.Dto.SmsCertificationRequest;
+import com.deadline826.bedi.SMS.Service.SmsCertificationService;
 import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
+import com.deadline826.bedi.exception.AuthenticationNumberMismatchException;
+import com.deadline826.bedi.exception.DuplicateEmailException;
+import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.Dto.UserDto;
-import com.deadline826.bedi.login.Domain.Dto.UserRequestDto;
 import com.deadline826.bedi.login.Domain.User;
-import com.deadline826.bedi.login.Service.GoogleService;
-import com.deadline826.bedi.login.Service.KakaoService;
 import com.deadline826.bedi.login.Service.UserService;
+import com.deadline826.bedi.login.Service.VerifyPasswordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Random;
 
 import static com.deadline826.bedi.security.JwtConstants.*;
-import static com.deadline826.bedi.security.JwtConstants.RT_HEADER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/user")
 @RequiredArgsConstructor
-public class AuthController {
+public class LoginController {
+
 
     private final UserService userService;
-    private final GoogleService googleService;
-    private final KakaoService kakaoService;
+    private final VerifyPasswordService verifyPasswordService;
+    Random random = new Random();
 
-    @GetMapping(value = "/kakao" )
-    public ResponseEntity<TokenDto> returnco(@RequestParam String code, HttpServletResponse response) {
-        //카카오 서버로 부터 사용자 정보 받아오기
-        String accessToken = kakaoService.getAccessToken(code);
-        UserDto userDto = kakaoService.getUserInfo(accessToken);
 
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody UserDto userDto) throws DuplicateEmailException {
+
+
+        while (true){  //고유 아이디 생성
+            userDto.setId(Long.parseLong(String.valueOf(1000000000 + random.nextInt(900000000))));
+            User user = userService.findUserById(userDto.getId());
+            if (user==null)
+                break;
+        }
+
+        //유저정보 저장
         userService.saveUser(userDto);
 
-        // 카카오로 로그인 해서 JWT 받아오기
-        TokenDto tokenDto = userService.login(userDto,response);
 
-        return ResponseEntity.ok().body(tokenDto);
+        return ResponseEntity.ok().body("회원가입 완료");
     }
 
-    @PostMapping(value = "/google" )
-    public ResponseEntity<TokenDto> returnco(@RequestBody UserRequestDto userRequestDto, HttpServletResponse response) throws IOException, GeneralSecurityException {
-        // 구글로부터 사용자 받아오기
-        UserDto userDto = googleService.getUserInfo(userRequestDto.getCredential());
 
-        userService.saveUser(userDto);
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) throws AuthenticationNumberMismatchException {
 
-        // 카카오로 로그인 해서 JWT 받아오기
-        TokenDto tokenDto = userService.login(userDto,response);
+        // redis 를 아용하여 로그인 정보를 1분간 임시저장한다 (PW 검사시 이용됨)
+        verifyPasswordService.makeTempPasswordStorage(loginDto.getEmail(),loginDto.getPassword());
 
-        return ResponseEntity.ok().body(tokenDto);
+        // loginDto 로 로그인 진행
+        TokenDto loginToken = userService.login(loginDto);
+
+
+        // 토큰정보를 반환한다
+        return ResponseEntity.ok().body(loginToken);
     }
+
+
 
     //refreshToken 을 이용하여 accessToken 가져오기
     @GetMapping("/refresh")
@@ -74,8 +91,9 @@ public class AuthController {
 
     // 내정보 가져오기
     @GetMapping("/my")
-    public ResponseEntity<Long> my() {
+    public ResponseEntity<Long> my(HttpServletRequest request) {
         User user = userService.getUserFromAccessToken();
         return ResponseEntity.ok(user.getId());
     }
+
 }

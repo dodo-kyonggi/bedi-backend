@@ -1,7 +1,7 @@
 package com.deadline826.bedi.login.Domain;
 
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Token.Domain.RefreshToken;
+
 import com.deadline826.bedi.point.domain.Point;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -26,20 +26,11 @@ public class User {
 
     private String username;   // 사용자 이름
 
-    private String password;
+    private String password;  //인코딩 된 값
 
     private String email;  //카카오 이메일
 
-    @Enumerated(EnumType.STRING)
-    private Authority authority;
-
-    @OneToOne
-    @JoinColumn (name = "refresh_id")
-    private RefreshToken refreshToken;
-
-    public void updateRefreshToken(RefreshToken newToken) {
-        this.refreshToken = newToken;
-    }
+    private String phone;
 
     @OneToMany(mappedBy = "user")
     private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)

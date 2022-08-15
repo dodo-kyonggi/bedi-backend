@@ -44,9 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 사용 X
 
         // 로그인, 리프레시 요청이라면 모두 허용
-        http.authorizeRequests().antMatchers("/","/auth/kakao", "/kakao/login", "/kakao/refresh").permitAll();
-        http.authorizeRequests().antMatchers("/auth/google","/google/refresh").permitAll();
 
+        http.authorizeRequests().antMatchers("/","/message/send","/message/confirm").permitAll();
+        http.authorizeRequests().antMatchers("/user/login","/user/signup","/user/refresh").permitAll();
         //그 외는 토큰으로 인증 받아야함
         http.authorizeRequests().anyRequest().authenticated();
 

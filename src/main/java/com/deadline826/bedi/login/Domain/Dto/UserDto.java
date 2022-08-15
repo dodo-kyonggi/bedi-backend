@@ -1,6 +1,5 @@
 package com.deadline826.bedi.login.Domain.Dto;
 
-import com.deadline826.bedi.login.Domain.Authority;
 import com.deadline826.bedi.login.Domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,9 +15,9 @@ public class UserDto {
     private Long id;     // 카카오가 넘겨주는 랜덤 값
     private String username;    // 사용자 이름
     private String password;
-    private String email;    //카카오 로그인 이메일
+    private String email;    // 로그인 이메일
+    private String phone;
 
-    private Authority authority;   //구글 또는 카카오
 
     public User toEntity() {
         return User.builder()
@@ -26,7 +25,8 @@ public class UserDto {
                 .username(username)
                 .email(email)
                 .password(password)
-                .authority(authority)
+                .phone(phone)
+
                 .build();
     }
 

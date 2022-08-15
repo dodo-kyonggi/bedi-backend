@@ -6,7 +6,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Token.Domain.RefreshToken;
+//import com.deadline826.bedi.Token.Domain.RefreshToken;
+import com.deadline826.bedi.Token.Service.RefreshTokenCertificationService;
+import com.deadline826.bedi.exception.DuplicateEmailException;
+import com.deadline826.bedi.login.Domain.Dto.LoginDto;
 import com.deadline826.bedi.login.Domain.User;
 
 import com.deadline826.bedi.Token.Domain.Dto.TokenDto;
@@ -14,7 +17,7 @@ import com.deadline826.bedi.login.Domain.Dto.UserDto;
 
 import com.deadline826.bedi.exception.CustomAuthenticationException;
 import com.deadline826.bedi.Goal.repository.GoalRepository;
-import com.deadline826.bedi.Token.repository.RefreshTokenRepository;
+//import com.deadline826.bedi.Token.repository.RefreshTokenRepository;
 import com.deadline826.bedi.login.Service.UserService;
 import com.deadline826.bedi.login.repository.UserRepository;
 
@@ -37,12 +40,10 @@ import java.util.*;
 
 import static com.deadline826.bedi.security.JwtConstants.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import io.jsonwebtoken.Jwts;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Transactional
@@ -51,10 +52,11 @@ import javax.servlet.http.HttpServletResponse;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    //private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private CustomAuthenticationFilter authenticationFilter;
     private final GoalRepository goalRepository;
+    private final RefreshTokenCertificationService refreshTokenCertificationService;
 
     @Override
     public void setCustomAuthenticationFilter(CustomAuthenticationFilter authenticationFilter) {
@@ -74,60 +76,54 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // 로그인 처리 후 JWT토큰 발급
     //return 쪽 수정했습니다
-    public TokenDto login(UserDto userDto, HttpServletResponse response) {
+    public TokenDto login(LoginDto loginDto) {
         try {
+
             //CustomAuthenticationFilter 의 attemptAuthentication 으로 이동
-            //request 에는  id, password 정보가 들어있음
-            Authentication authentication = authenticationFilter.attemptAuthentication(userDto);
+            Authentication authentication = authenticationFilter.attemptAuthentication(loginDto);
 
+            //검증을 마친 이메일 정보
+            String email = authentication.getPrincipal().toString();
 
+            //검증을 마친 이메일 정보로 유저 정보 가져오기
+            Optional<User> user = userRepository.findByEmail(email);
+            String user_id = user.get().getId().toString();
 
-            // springframework.security.core.userdetails
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            String id = user.getUsername();
+            Optional<User> userId = userRepository.findById(Long.parseLong(user_id));
 
-
-
-
-            Optional<User> userId = userRepository.findById(Long.parseLong(id));
-            String kakao_random_id = userId.get().getId().toString();
 
             //토큰 생성
             String accessToken = JWT.create()
-                    .withSubject(kakao_random_id)  // 카카오가 넘겨주는 랜덤 값
+                    .withSubject(user_id)  //  랜덤 값
                     .withExpiresAt(new Date(System.currentTimeMillis() + AT_EXP_TIME))  // 토큰 만료시간
-                    .withClaim("username", userDto.getUsername())   //사용자 이름
+                    .withClaim("username",  user.get().getUsername())   //사용자 이름
                     .withIssuedAt(new Date(System.currentTimeMillis()))  // 토큰 생성시간
                     .sign(Algorithm.HMAC256(JWT_SECRET));  //JWT_SECRET 키로 암호화
             String refreshToken = JWT.create()
-                    .withSubject(kakao_random_id)
+                    .withSubject(user_id)
                     .withExpiresAt(new Date(System.currentTimeMillis() + RT_EXP_TIME))
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .sign(Algorithm.HMAC256(JWT_SECRET));
 
             // Refresh Token DB에 저장
+//
+//            RefreshToken remainRefreshToken = user.get().getRefreshToken();
+//            if (remainRefreshToken!=null){
+//                remainRefreshToken.setToken(refreshToken);
+//            }
+//
+//            else{
+//                RefreshToken newRefreshToken = new RefreshToken();
+//                newRefreshToken.setToken(refreshToken);
+//                RefreshToken save = refreshTokenRepository.save(newRefreshToken);
+//
+//                //RefreshToken 의 기본키를 user 의 외래키로 설정
+//                updateRefreshToken(random_id, save);
+//            }
 
-            RefreshToken remainRefreshToken = userId.get().getRefreshToken();
-            if (remainRefreshToken!=null){
-                remainRefreshToken.setToken(refreshToken);
-            }
 
-            else{
-                RefreshToken refreshToken1 = new RefreshToken();
-                refreshToken1.setToken(refreshToken);
-//                refreshToken1.setUser(userId.get());
-                RefreshToken save = refreshTokenRepository.save(refreshToken1);
-
-                //RefreshToken 의 기본키를 user 의 외래키로 설정
-                updateRefreshToken(kakao_random_id, save);
-            }
-
-            // Access Token , Refresh Token 프론트에 Response Header로 전달
-            response.setContentType(APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding("utf-8");
-            response.setHeader(AT_HEADER, accessToken);
-            response.setHeader(RT_HEADER, refreshToken);
-
+            // Refresh Token redis 에 저장
+            refreshTokenCertificationService.saveRefreshToken(user_id,refreshToken);
 
 
             return TokenDto.builder()
@@ -135,7 +131,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     .refreshToken(refreshToken)
                     .refreshTokenExpireTime(getExpireTime(refreshToken))  // 이 부분
                     .build();
+
         } catch (AuthenticationException e) {
+            throw new CustomAuthenticationException("로그인 잘못됨");
+        }
+        catch (NullPointerException e) {
             throw new CustomAuthenticationException("로그인 잘못됨");
         }
     }
@@ -164,28 +164,65 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void saveUser(UserDto dto) {
-        boolean isSave = validateDuplicateUserId(dto);  //검증하고
+    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+
+        //유저 정보 가져오기
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("UserDetailsService - loadUserByUsername : 사용자를 찾을 수 없습니다."));
+
+        // authorities 대신 Collections.EMPTY_LIST을 넣어 Role 없이 인증가능하게 했다
+        //CustomAuthProvider 의 authenticate 로 복귀
+        return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassword(),Collections.EMPTY_LIST);
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty())
+            return null;
+        else
+            return user.get();
+
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        try {
+            Optional<User> user = userRepository.findByEmail(email);
+            return user.get();
+        }
+        catch (NoSuchElementException e){
+            throw new NoSuchElementException();
+        }
+
+    }
+
+
+    @Override
+    public void saveUser(UserDto dto) throws DuplicateEmailException {
+        boolean isSave = validateDuplicateUserEmail(dto);  //검증하고
         if (!isSave) {
             dto.encodePassword(passwordEncoder.encode(dto.getPassword()));  //비밀번호 암호화 해서
-            userRepository.save(dto.toEntity());   //저장하기
+            User user = dto.toEntity();
+            userRepository.save(user);   //저장하기
+
         }
     }
 
-    private boolean validateDuplicateUserId(UserDto dto) {
-        if (userRepository.existsById(dto.getId())) {     // findByUsername -> findById  이름말고 아이디로 검사하게끔 수정
-            return true;
+    private boolean validateDuplicateUserEmail(UserDto dto) throws DuplicateEmailException {
+        if (userRepository.existsByEmail(dto.getEmail())) {     // 이메일로 검사하게끔 수정
+            throw new DuplicateEmailException("이미 존재하는 이메일 입니다");
         }
         return false;
     }
 
     // =============== TOKEN ============ //
 
-    @Override
-    public void updateRefreshToken(String username, RefreshToken refreshToken) {
-        User user = userRepository.findById((Long.parseLong( username))).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        user.updateRefreshToken(refreshToken);
-    }
+//    @Override
+//    public void updateRefreshToken(String id, RefreshToken refreshToken) {
+//        User user = userRepository.findById((Long.parseLong( id))).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+//        user.updateRefreshToken(refreshToken);
+//    }
 
 
     @Override
@@ -216,9 +253,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        if (!user.getRefreshToken().getToken().equals(refreshToken)) {
+        if (!refreshTokenCertificationService.findRefreshToken(id).equals(refreshToken) ){
             throw new JWTVerificationException("유효하지 않은 Refresh Token 입니다.");
         }
+
+//        if (!user.getRefreshToken().getToken().equals(refreshToken)) {
+//            throw new JWTVerificationException("유효하지 않은 Refresh Token 입니다.");
+//        }
         String accessToken = JWT.create()
                 .withSubject(user.getId().toString())
                 .withExpiresAt(new Date(now + AT_EXP_TIME))
@@ -234,18 +275,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     .withSubject(user.getId().toString())  // 카카오가 넘겨주는 랜덤 값
                     .withExpiresAt(new Date(now + RT_EXP_TIME))
                     .sign(Algorithm.HMAC256(JWT_SECRET));
-            user.getRefreshToken().setToken(newRefreshToken);
+//            user.getRefreshToken().setToken(newRefreshToken);
+            refreshTokenCertificationService.saveRefreshToken(id,newRefreshToken);
 
             return TokenDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(newRefreshToken)
-                    .refreshTokenExpireTime(getExpireTime(newRefreshToken))    // 이 부분
+                    .refreshTokenExpireTime(getExpireTime(newRefreshToken))
                     .build();
         }
 
         return TokenDto.builder()
                 .accessToken(accessToken)
-                .refreshToken("유효기간이 충분합니다")   // 이 부분
+                .refreshToken("유효기간이 충분합니다")
                 .build();
 
 

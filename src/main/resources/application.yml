@@ -1,5 +1,13 @@
 spring:
 
+  api_key: "NCSYCO1EGUYE3K53"
+  api_secret: "T8TYLB7OE8V978SSBRXRSWBIIP8WAATK"
+
+
+  redis:
+    host: localhost
+    port: 6379
+
   security:
     user:
       name: bedi
