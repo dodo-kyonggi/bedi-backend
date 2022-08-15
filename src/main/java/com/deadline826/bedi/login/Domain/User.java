@@ -30,21 +30,6 @@ public class User {
 
     private String phone;
 
-
-
-
-//    @Enumerated(EnumType.STRING)
-//    private Authority authority;
-
-//    @OneToOne
-//    @JoinColumn (name = "refresh_id")
-//    private RefreshToken refreshToken;
-
-
-//    public void updateRefreshToken(RefreshToken newToken) {
-//        this.refreshToken = newToken;
-//    }
-
     @OneToMany(mappedBy = "user")
     private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)
 

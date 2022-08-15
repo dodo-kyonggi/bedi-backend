@@ -1,13 +1,10 @@
 package com.deadline826.bedi.login.Domain.Dto;
 
-import com.deadline826.bedi.login.Domain.Authority;
 import com.deadline826.bedi.login.Domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Transient;
 
 
 @Getter
@@ -22,9 +19,6 @@ public class UserDto {
     private String phone;
 
 
-
-//    private Authority authority;   //구글 또는 카카오
-
     public User toEntity() {
         return User.builder()
                 .id(id)
@@ -32,7 +26,7 @@ public class UserDto {
                 .email(email)
                 .password(password)
                 .phone(phone)
-//                .authority(authority)
+
                 .build();
     }
 
