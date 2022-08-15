@@ -89,6 +89,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Optional<User> user = userRepository.findByEmail(email);
             String user_id = user.get().getId().toString();
 
+            Optional<User> userId = userRepository.findById(Long.parseLong(user_id));
+
 
             //토큰 생성
             String accessToken = JWT.create()
