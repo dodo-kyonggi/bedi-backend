@@ -1,5 +1,6 @@
 package com.deadline826.bedi.security;
 
+import org.springframework.beans.factory.annotation.Value;
 
 public class JwtConstants {
 

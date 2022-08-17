@@ -5,8 +5,9 @@ spring:
 
 
   redis:
-    host: localhost
-    port: 6379
+    host: redis-13248.c289.us-west-1-2.ec2.cloud.redislabs.com
+    port: 13248
+    password: kEMuLq0gx7cd2ncmZodDcmHaOw8nXNMo
 
   security:
     user:
@@ -42,3 +43,4 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
+
