@@ -1,4 +1,4 @@
-package com.deadline826.bedi.Statistics.Domain;
+package com.deadline826.bedi.Statistics.Domain.Dto;
 
 
 import lombok.Getter;

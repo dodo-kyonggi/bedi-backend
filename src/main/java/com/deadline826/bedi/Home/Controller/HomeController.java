@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class HomeController {
 
     @GetMapping("/")
-    public String home() throws DuplicateEmailException {
+    public String home() {
 
         return " 홈 테스트";
 

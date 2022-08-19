@@ -4,10 +4,7 @@ import com.deadline826.bedi.Goal.Domain.Dto.GoalPostDto;
 import com.deadline826.bedi.Goal.Domain.Dto.GoalDto;
 import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Goal.exception.OutRangeOfGoalException;
-import com.deadline826.bedi.Goal.exception.PastModifyException;
-import com.deadline826.bedi.Goal.exception.TooCloseException;
-import com.deadline826.bedi.Goal.exception.WrongGoalIDException;
+import com.deadline826.bedi.Goal.exception.*;
 import com.deadline826.bedi.Goal.repository.GoalRepository;
 import com.deadline826.bedi.login.Domain.User;
 
@@ -64,6 +61,10 @@ public class GoalServiceImpl implements GoalService {
             LocalDate date = goal.getDate();
             if (date.compareTo(LocalDate.now()) < 0) {
                 throw new PastModifyException("과거 날짜의 목표는 달성할 수 없습니다.");
+            }
+
+            else if (date.compareTo(LocalDate.now()) > 0){
+                throw new FutureModifyException("미래 날짜의 목표는 달성할 수 없습니다.");
             }
 
             Double goalLat = goal.getLat();
