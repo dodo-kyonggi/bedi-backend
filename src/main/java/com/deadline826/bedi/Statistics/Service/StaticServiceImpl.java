@@ -79,7 +79,9 @@ public class StaticServiceImpl implements StaticService{
     public Double thisMonthTotalCount(List<Goal> goals){
 
         // 이번 달 목표의 총 갯수를 리턴한다
-        return (double)goals.stream().filter(goal -> goal.getDate().getYear() == LocalDate.now().getYear() &&
+        return (double)goals.stream()
+                .filter(goal -> goal.getDate().isBefore(LocalDate.now()) || goal.getDate().isEqual(LocalDate.now()) )
+                .filter(goal -> goal.getDate().getYear() == LocalDate.now().getYear() &&
                 goal.getDate().getMonth() == LocalDate.now().getMonth() ).count();
     }
 
@@ -87,7 +89,9 @@ public class StaticServiceImpl implements StaticService{
     public Double selectMonthTotalCount(List<Goal> goals, int year , Month month){
 
         // 선택한 달의 목표 총 갯수를 리턴한다
-        return (double)goals.stream().filter(goal -> goal.getDate().getYear() == year &&
+        return (double)goals.stream()
+                .filter(goal -> goal.getDate().isBefore(LocalDate.now()) || goal.getDate().isEqual(LocalDate.now()) )
+                .filter(goal -> goal.getDate().getYear() == year &&
                 goal.getDate().getMonth() == month ).count();
     }
 
@@ -95,18 +99,24 @@ public class StaticServiceImpl implements StaticService{
     public Double thisMonthTotalSuccessCount(List<Goal> goals){
 
         // 이번 달 목표 전체 중 성공한 목표의 갯수를 리턴한다
-        return (double)goals.stream().filter(goal -> goal.getDate().getYear() == LocalDate.now().getYear() &&
+        return (double)goals.stream()
+                .filter(goal -> goal.getDate().isBefore(LocalDate.now()) || goal.getDate().isEqual(LocalDate.now()) )
+                .filter(goal -> goal.getDate().getYear() == LocalDate.now().getYear() &&
                 goal.getDate().getMonth() == LocalDate.now().getMonth() &&
-                goal.getSuccess().equals(true) ).count();
+                goal.getSuccess().equals(true) )
+                .count();
     }
 
 
     public Double selectMonthTotalSuccessCount(List<Goal> goals, int year , Month month){
 
         // 선택한 달 목표 전체 중 성공한 목표의 갯수를 리턴한다
-        return (double)goals.stream().filter(goal -> goal.getDate().getYear() == year &&
+        return (double)goals.stream()
+                .filter(goal -> goal.getDate().isBefore(LocalDate.now()) || goal.getDate().isEqual(LocalDate.now()) )
+                .filter(goal -> goal.getDate().getYear() == year &&
                 goal.getDate().getMonth() == month &&
-                goal.getSuccess().equals(true) ).count();
+                goal.getSuccess().equals(true) )
+                .count();
     }
 
 
