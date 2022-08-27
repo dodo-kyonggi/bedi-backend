@@ -21,7 +21,7 @@ public class Complete {
     private Long id;
 
 
-    @Column(name="complete_count")
+    //@Column(name="complete_count")
     private Long completeCount;
 
 }
