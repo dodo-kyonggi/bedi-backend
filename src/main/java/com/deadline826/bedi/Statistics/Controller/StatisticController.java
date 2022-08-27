@@ -1,7 +1,7 @@
 package com.deadline826.bedi.Statistics.Controller;
 
 import com.deadline826.bedi.Goal.Domain.Goal;
-import com.deadline826.bedi.Statistics.Domain.Dto.GoalsAchievePercentDto;
+import com.deadline826.bedi.Statistics.Domain.Dto.TotalStatisticsDto;
 import com.deadline826.bedi.Statistics.Domain.Dto.SelectMonthAchievePercentDto;
 import com.deadline826.bedi.Statistics.Service.StaticService;
 import com.deadline826.bedi.login.Domain.User;
@@ -23,15 +23,15 @@ public class StatisticController {
     private final UserService userService;
     private final StaticService staticService;
 
-    // 홈 화면에서 전체 목표 달성 비율과 이번 달 목표 달성 비율을 보여준다
+    // 홈 화면에서 전반적인 통계를 보여준다
     @GetMapping("/home")
-    public GoalsAchievePercentDto showHomeStatic(){
+    public TotalStatisticsDto showHomeStatic(){
         User user = userService.getUserFromAccessToken();
         List<Goal> goals = user.getGoals();
 
-        GoalsAchievePercentDto thisMonthAndTotalAchievePercent = staticService.getThisMonthAndTotalAchievePercent(goals);
+        TotalStatisticsDto totalStatistics = staticService.getTotalStatistics(goals,user.getId());
 
-        return thisMonthAndTotalAchievePercent;
+        return totalStatistics;
 
     }
 

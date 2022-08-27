@@ -4,12 +4,14 @@ import com.deadline826.bedi.login.Domain.User;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @RequiredArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table (name="point")
 public class Point {
 

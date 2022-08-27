@@ -6,6 +6,8 @@ import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Domain.Goal;
 import com.deadline826.bedi.Goal.exception.*;
 import com.deadline826.bedi.Goal.repository.GoalRepository;
+import com.deadline826.bedi.Statistics.Domain.Complete;
+import com.deadline826.bedi.Statistics.Repository.CompleteRepository;
 import com.deadline826.bedi.login.Domain.User;
 
 import com.deadline826.bedi.point.domain.Point;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,7 @@ public class GoalServiceImpl implements GoalService {
     private final GoalRepository goalRepository;
     private final PointRepository pointRepository;
     private final ModelMapper modelMapper;
+    private final CompleteRepository completeRepository;
 
     /**
      * 현재 날짜의 목표를 보여준다.
@@ -83,6 +87,24 @@ public class GoalServiceImpl implements GoalService {
                     .build();
             pointRepository.save(point);
             goal.setSuccess(true);
+
+             Optional<Complete> userHasAchieved = completeRepository.findById(user.getId());
+        System.out.println("userHasAchieved = " + userHasAchieved);
+
+             if (userHasAchieved.isEmpty()) {
+                 Complete complete = Complete.builder()
+                         .id(user.getId())
+                         .completeCount(1L)
+                         .build();
+                 //complete.setCompleteCount(complete.getCompleteCount() + 1);
+                 completeRepository.save(complete);
+             }
+             else{
+                 Complete isAchieved = userHasAchieved.get();
+                isAchieved.setCompleteCount(isAchieved.getCompleteCount()+1);
+             }
+
+
 
             return modelMapper.map(goal, GoalDto.class);
     }

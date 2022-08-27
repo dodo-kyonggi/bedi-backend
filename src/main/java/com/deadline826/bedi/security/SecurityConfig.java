@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        //http.addFilter(customAuthorizationFilter);
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
     }

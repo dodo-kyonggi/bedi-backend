@@ -62,6 +62,10 @@ dependencies {
 
 	//REDIS
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// spring-jdbc
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.22'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 }
 
 //tasks.named('test') {
