@@ -17,7 +17,7 @@ public class CompleteRepositoryImpl implements CustomCompleteRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    String SQL = "select *, RANK() OVER( ORDER BY complete_count DESC) as ranking from Complete ";
+    String SQL = "select *, RANK() OVER( ORDER BY complete_count DESC) as ranking from complete ";
 
 
 
