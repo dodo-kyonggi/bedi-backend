@@ -9,10 +9,11 @@ import java.util.LinkedHashMap;
 @Getter
 @Setter
 public class TotalStatisticsDto {
-    public String totalPercent;
-    public String thisMonthPercent;
-    public String showIncreaseOrDecrease;
-    public String totalSuccessCount;
-    private String topRank;
+    public int totalPercent;
+    public int thisMonthPercent;
+    private int lastMonthPercent;
+    public int showIncreaseOrDecrease;
+    public int totalSuccessCount;
+    private int topRank;
     private LinkedHashMap last7DaysPercent;
 }

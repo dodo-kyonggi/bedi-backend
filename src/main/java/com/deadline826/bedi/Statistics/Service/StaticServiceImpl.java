@@ -49,7 +49,7 @@ public class StaticServiceImpl implements StaticService{
     @Override
     public TotalStatisticsDto getTotalStatistics(List<Goal> goals, Long userId){
 
-        String showIncreaseOrDecrease; //달성률 증감 표시
+        int showIncreaseOrDecrease; //달성률 증감 표시
 
         Double totalGoalCount = getTotalGoalCount(goals);
         int totalSuccessCount = getTotalGoalSuccessCount(goals);
@@ -69,13 +69,13 @@ public class StaticServiceImpl implements StaticService{
 
 
         if (thisMonthPercent>lastMonthPercent){
-            showIncreaseOrDecrease = "지난 달 보다 달성률이 " +difference+"% 만큼 증가했습니다";
+            showIncreaseOrDecrease = difference;
         }
         else if( thisMonthPercent == lastMonthPercent){
-            showIncreaseOrDecrease = "지난 달과 달성률이 동일합니다";
+            showIncreaseOrDecrease = 0;
         }
         else{
-            showIncreaseOrDecrease = "지난 달 보다 달성률이 " +difference+"% 만큼 하락했습니다";
+            showIncreaseOrDecrease = -1*difference;
         }
 
 
@@ -100,11 +100,12 @@ public class StaticServiceImpl implements StaticService{
 
         TotalStatisticsDto totalStatisticsDto = new TotalStatisticsDto();
 
-        totalStatisticsDto.setTotalPercent(totalPercent+"%");
-        totalStatisticsDto.setThisMonthPercent(thisMonthPercent+"%");
+        totalStatisticsDto.setTotalPercent(totalPercent);
+        totalStatisticsDto.setThisMonthPercent(thisMonthPercent);
+        totalStatisticsDto.setLastMonthPercent(lastMonthPercent);
         totalStatisticsDto.setShowIncreaseOrDecrease(showIncreaseOrDecrease);
-        totalStatisticsDto.setTotalSuccessCount( totalSuccessCount + "개" );
-        totalStatisticsDto.setTopRank(topRank +"%");
+        totalStatisticsDto.setTotalSuccessCount( totalSuccessCount );
+        totalStatisticsDto.setTopRank(topRank );
         totalStatisticsDto.setLast7DaysPercent(last7DaysPercent);
 
         return totalStatisticsDto;
@@ -221,7 +222,7 @@ public class StaticServiceImpl implements StaticService{
                     .count();
 
 
-            String percent = (int)((successCount/totalCount)*100) + "%";
+            int percent = (int)((successCount/totalCount)*100);
 
             last7DaysPercentMap.put( i+"daysAgo" ,percent);
 
