@@ -42,5 +42,49 @@ public class CharacterServiceImpl implements CharacterService {
         return null;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public CharacterDto getOngoingCharacter(User user) {
+
+        Collections collections = collectionRepository.findOneByUserAndState(user, "ongoing");
+
+        Characters characters = collections.getCharacter();
+
+        return modelMapper.map(characters, CharacterDto.class);
+    }
+
+    @Override
+    @Transactional
+    public CharacterDto reachToNextLevel(User user, Integer point) {
+
+        Collections collections = collectionRepository.findOneByUserAndState(user, "ongoing");
+
+        Characters ongoing = collections.getCharacter();
+
+        Characters next = characterRepository.findOneByLevel(ongoing.getLevel() + 1);
+
+        if (next == null) return null;
+
+        Integer nextPoint = next.getMinimunPointToReach();
+
+        if (point >= nextPoint) {
+            setNextLevel(user, collections, next);
+            return modelMapper.map(next, CharacterDto.class);
+        }
+        else return null;
+    }
+
+    private void setNextLevel(User user, Collections before, Characters next) {
+        before.setState("completed");
+
+        Collections collections = Collections.builder()
+                .user(user)
+                .character(next)
+                .state("ongoing")
+                .build();
+
+        collectionRepository.save(collections);
+    }
+
 }
 

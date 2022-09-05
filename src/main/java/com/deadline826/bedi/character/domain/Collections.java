@@ -6,7 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -28,9 +28,13 @@ public class Collections {
     private Characters character;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     private String state;
+
+    public void setState(String state) {
+        this.state = state;
+    }
 
     @Builder
     public Collections(User user, Characters character, String state) {

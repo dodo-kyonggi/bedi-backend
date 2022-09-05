@@ -64,7 +64,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                 // === SecurityContext에 저장 === //
                 String username = decodedJWT.getSubject();
-                System.out.println("username = " + username);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, Collections.EMPTY_LIST);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
