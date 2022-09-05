@@ -5,7 +5,6 @@ import com.deadline826.bedi.Goal.exception.PastModifyException;
 import com.deadline826.bedi.Goal.exception.TooCloseException;
 import com.deadline826.bedi.Goal.exception.WrongGoalIDException;
 import com.deadline826.bedi.exception.ErrorResponse;
-import io.opencensus.trace.Status;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

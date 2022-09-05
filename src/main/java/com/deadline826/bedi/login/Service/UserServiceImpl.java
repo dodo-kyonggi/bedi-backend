@@ -231,8 +231,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             // Authorization filter에서 SecurityContextHolder에서 set한 authentication 객체를 가져온다.
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userId = authentication.getPrincipal().toString();
-            return userRepository.findById(Long.parseLong(userId)).get();
-        } catch (Exception e) {
+            return userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new Exception("db에서 user를 가져올 수 없습니다."));
+        } catch (Exception e){
             log.error(String.valueOf(e));
             return null;
         }

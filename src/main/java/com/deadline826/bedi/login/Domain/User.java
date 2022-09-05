@@ -3,8 +3,6 @@ package com.deadline826.bedi.login.Domain;
 import com.deadline826.bedi.Goal.Domain.Goal;
 
 import com.deadline826.bedi.point.domain.Point;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;

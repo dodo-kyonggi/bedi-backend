@@ -5,16 +5,22 @@ import com.deadline826.bedi.Goal.Domain.Dto.GoalPostDto;
 import com.deadline826.bedi.Goal.Domain.Dto.GoalDto;
 import com.deadline826.bedi.Goal.Domain.Dto.GoalRequestDto;
 import com.deadline826.bedi.Goal.Service.GoalService;
+import com.deadline826.bedi.character.service.CharacterService;
+import com.deadline826.bedi.character.service.dto.CharacterDto;
 import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.login.Service.UserService;
 
+import com.deadline826.bedi.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +32,8 @@ public class GoalController {
 
     private final UserService userService;
     private final GoalService goalService;
+    private final CharacterService characterService;
+    private final PointService pointService;
 
     //목표 보여주기
     @GetMapping("/show")
@@ -74,13 +82,26 @@ public class GoalController {
     }
 
     @PostMapping("/success")
-    public ResponseEntity<GoalDto> isSuccess(@RequestBody GoalRequestDto goalRequestDto) {
+    public ResponseEntity<Map> isSuccess(@RequestBody GoalRequestDto goalRequestDto) {
 
         User user = userService.getUserFromAccessToken();
 
-        GoalDto goal = goalService.isSuccess(user, goalRequestDto);
+        Map<String, Object> response = new HashMap<>();
 
-        return ResponseEntity.ok().body(goal);
+        GoalDto goalDto = goalService.isSuccess(user, goalRequestDto);
+
+        response.put("goal", goalDto);
+
+        Integer point = pointService.getAccumulatedPoint(user.getId());
+
+        CharacterDto characterDto = characterService.reachToNextLevel(user, point);
+
+        if (characterDto != null) {
+            response.put("levelUp", true);
+            response.put("character", characterDto);
+        } else response.put("levelUp", false);
+
+        return ResponseEntity.ok().body(response);
     }
 
 }
