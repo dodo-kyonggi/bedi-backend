@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
 @RequiredArgsConstructor
 public class PointRepositoryImpl implements CustomPointRepository {
 

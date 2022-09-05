@@ -56,6 +56,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             try {
                 // Access Token만 꺼내옴
                 String accessToken = authrizationHeader.substring(TOKEN_HEADER_PREFIX.length());
+                System.out.println("accessToken = " + accessToken);
 
                 // === Access Token 검증 === //
                 JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET)).build();
@@ -63,6 +64,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                 // === SecurityContext에 저장 === //
                 String username = decodedJWT.getSubject();
+                System.out.println("username = " + username);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, Collections.EMPTY_LIST);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

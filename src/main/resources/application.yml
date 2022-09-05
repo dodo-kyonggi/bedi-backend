@@ -15,17 +15,17 @@ spring:
       password: bedi
 
 
-  datasource:
-    url: jdbc:mysql://bedi.c1g4vqvq6mqm.ap-northeast-2.rds.amazonaws.com:3306/bedi?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: bedi
-    password: bedibedi
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
 #  datasource:
-#    url: jdbc:mysql://localhost:3306/jwt?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-#    username: root
-#    password: 1234
+#    url: jdbc:mysql://bedi.c1g4vqvq6mqm.ap-northeast-2.rds.amazonaws.com:3306/bedi?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    username: bedi
+#    password: bedibedi
 #    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/bedi?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: root
+    password: gks253
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   logging:
     level:
@@ -34,7 +34,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     show-sql: true
     database: mysql
 
@@ -43,4 +43,3 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
-
