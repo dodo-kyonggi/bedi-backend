@@ -33,7 +33,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Goal> goals=new ArrayList<>();   // 양방향 매핑 (테이블에는 표시 안됨)
 
-    @OneToMany(mappedBy = "user")
-    private List<Point> points = new ArrayList<>();
+    @OneToOne(mappedBy = "user")
+    private Point point;
 
 }

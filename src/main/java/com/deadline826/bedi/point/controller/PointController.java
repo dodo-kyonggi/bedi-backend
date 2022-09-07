@@ -1,5 +1,6 @@
 package com.deadline826.bedi.point.controller;
 
+import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.login.Service.UserService;
 import com.deadline826.bedi.point.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class PointController {
 
     @GetMapping
     public Integer getAllPoint() {
-        Long userId = userService.getUserFromAccessToken().getId();
-        return pointService.getAccumulatedPoint(userId);
+        User user = userService.getUserFromAccessToken();
+        return pointService.getAccumulatedPoint(user);
     }
 
 }

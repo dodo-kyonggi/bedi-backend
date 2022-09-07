@@ -40,7 +40,7 @@ public class CharacterController {
 
         User user = userService.getUserFromAccessToken();
 
-        Integer point = pointService.getAccumulatedPoint(user.getId());
+        Integer point = pointService.getAccumulatedPoint(user);
         response.put("point", point);
 
         CharacterDto characterDto = characterService.getOngoingCharacter(user);

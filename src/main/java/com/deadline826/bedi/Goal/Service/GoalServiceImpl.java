@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class GoalServiceImpl implements GoalService {
 
     private final GoalRepository goalRepository;
-    private final PointRepository pointRepository;
     private final ModelMapper modelMapper;
 
     /**
@@ -76,11 +75,6 @@ public class GoalServiceImpl implements GoalService {
             // 사용자가 목표 범위(50m) 이내에 존재 안함
             if (Double.compare(distance, 50.0) > 0) throw new OutRangeOfGoalException("목표 범위로부터 너무 멉니다.");
 
-            Point point = Point.builder()
-                    .user(user)
-                    .reward(20)
-                    .build();
-            pointRepository.save(point);
             goal.setSuccess(true);
 
             return modelMapper.map(goal, GoalDto.class);
