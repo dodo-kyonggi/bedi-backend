@@ -2,7 +2,6 @@ package com.deadline826.bedi.Goal.handler;
 
 import com.deadline826.bedi.Goal.exception.*;
 import com.deadline826.bedi.exception.ErrorResponse;
-import io.opencensus.trace.Status;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
