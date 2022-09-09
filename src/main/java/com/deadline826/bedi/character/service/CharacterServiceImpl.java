@@ -5,11 +5,14 @@ import com.deadline826.bedi.character.domain.Collections;
 import com.deadline826.bedi.character.repository.CharacterRepository;
 import com.deadline826.bedi.character.repository.CollectionRepository;
 import com.deadline826.bedi.character.service.dto.CharacterDto;
+import com.deadline826.bedi.character.service.dto.CollectionDto;
 import com.deadline826.bedi.login.Domain.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,17 +29,27 @@ public class CharacterServiceImpl implements CharacterService {
         Collections collections = collectionRepository.findOneByUserAndState(user, "ongoing");
 
         if (collections == null) {
-            Characters characters = characterRepository.findOneByLevel(0);
 
-            Collections ongoing = Collections.builder()
-                    .user(user)
-                    .character(characters)
-                    .state("ongoing")
-                    .build();
+            List<Characters> characters = characterRepository.findAllByOrderByLevelAsc();
 
-            collectionRepository.save(ongoing);
+            Characters zeroLevel = null;
 
-            return modelMapper.map(characters, CharacterDto.class);
+            for (Characters character : characters) {
+
+                Collections init = Collections.builder()
+                        .user(user)
+                        .character(character)
+                        .build();
+
+                if (character.getLevel() == 0) {
+                    zeroLevel = character;
+                    init.setState("ongoing");
+                } else init.setState("incompleted");
+
+                collectionRepository.save(init);
+            }
+
+            return modelMapper.map(zeroLevel, CharacterDto.class);
         }
 
         return null;
@@ -53,37 +66,38 @@ public class CharacterServiceImpl implements CharacterService {
         return modelMapper.map(characters, CharacterDto.class);
     }
 
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<CollectionDto> getCharacterCollection(User user) {
+//
+//        List<Collections> collections = collectionRepository.findAllByUser(user);
+//
+//        return collections.stream().map(collection -> new CollectionDto(collection.getCharacter(), collection.getState())).collect(Collectors.toList());
+//    }
+
     @Override
     @Transactional
     public CharacterDto reachToNextLevel(User user, Integer point) {
 
-        Collections collections = collectionRepository.findOneByUserAndState(user, "ongoing");
+        Collections before = collectionRepository.findOneByUserAndState(user, "ongoing");
 
-        Characters ongoing = collections.getCharacter();
+        Characters ongoingCharacter = before.getCharacter();
 
-        Characters next = characterRepository.findOneByLevel(ongoing.getLevel() + 1);
+        Characters nextCharacter = characterRepository.findOneByLevel(ongoingCharacter.getLevel() + 1); // 진행 중인 캐릭터의 다음 레벨
 
-        if (next == null) return null;
+        if (nextCharacter == null) return null; // 진행 중인 캐릭터가 최고 레벨
 
-        Integer nextPoint = next.getMinimunPointToReach();
+        Integer nextPoint = nextCharacter.getMinimunPointToReach();
 
         if (point >= nextPoint) {
-            setNextLevel(user, collections, next);
+            Collections next = collectionRepository.findOneByUserAndCharacter(user, nextCharacter);
+
+            before.setState("completed");
+            next.setState("ongoing");
+
             return modelMapper.map(next, CharacterDto.class);
         }
         else return null;
-    }
-
-    private void setNextLevel(User user, Collections before, Characters next) {
-        before.setState("completed");
-
-        Collections collections = Collections.builder()
-                .user(user)
-                .character(next)
-                .state("ongoing")
-                .build();
-
-        collectionRepository.save(collections);
     }
 
 }

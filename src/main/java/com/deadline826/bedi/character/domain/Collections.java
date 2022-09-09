@@ -1,12 +1,15 @@
 package com.deadline826.bedi.character.domain;
 
 import com.deadline826.bedi.login.Domain.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -25,10 +28,14 @@ public class Collections {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id")
+    @JsonIgnore
     private Characters character;
 
     @CreatedDate
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime updateDate;
 
     private String state;
 

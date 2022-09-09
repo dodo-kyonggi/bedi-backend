@@ -2,16 +2,17 @@ package com.deadline826.bedi.point.domain;
 
 import com.deadline826.bedi.login.Domain.User;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@RequiredArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
+@Getter
 @Table (name="point")
 public class Point {
 
@@ -20,14 +21,15 @@ public class Point {
     @Column(name="point_id")
     private Long id;
 
+    @OneToOne
     @JoinColumn(name = "user_id")
-    @ManyToOne (fetch = FetchType.LAZY)
     private User user;
 
-    @CreatedDate
-    private LocalDate date;
-
     private Integer reward;
+
+    public void setReward(Integer reward) {
+        this.reward += reward;
+    }
 
     @Builder
     public Point(User user, Integer reward) {

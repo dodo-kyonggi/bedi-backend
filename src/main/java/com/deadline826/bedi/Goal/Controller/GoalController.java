@@ -89,10 +89,11 @@ public class GoalController {
         Map<String, Object> response = new HashMap<>();
 
         GoalDto goalDto = goalService.isSuccess(user, goalRequestDto);
+        pointService.save(user, 20);
 
         response.put("goal", goalDto);
 
-        Integer point = pointService.getAccumulatedPoint(user.getId());
+        Integer point = pointService.getAccumulatedPoint(user);
 
         CharacterDto characterDto = characterService.reachToNextLevel(user, point);
 

@@ -2,6 +2,7 @@ package com.deadline826.bedi.character.controller;
 
 import com.deadline826.bedi.character.service.CharacterService;
 import com.deadline826.bedi.character.service.dto.CharacterDto;
+import com.deadline826.bedi.character.service.dto.CollectionDto;
 import com.deadline826.bedi.login.Domain.User;
 import com.deadline826.bedi.login.Service.UserService;
 import com.deadline826.bedi.point.service.PointService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -40,7 +42,7 @@ public class CharacterController {
 
         User user = userService.getUserFromAccessToken();
 
-        Integer point = pointService.getAccumulatedPoint(user.getId());
+        Integer point = pointService.getAccumulatedPoint(user);
         response.put("point", point);
 
         CharacterDto characterDto = characterService.getOngoingCharacter(user);
@@ -48,5 +50,15 @@ public class CharacterController {
 
         return ResponseEntity.ok().body(response);
     }
+
+//    @GetMapping("/collect")
+//    public ResponseEntity<List> getUserCollectedCharacters() {
+//
+//        User user = userService.getUserFromAccessToken();
+//
+//        List<CollectionDto> collectionDtoList = characterService.getCharacterCollection(user);
+//
+//        return ResponseEntity.ok().body(collectionDtoList);
+//    }
 
 }
