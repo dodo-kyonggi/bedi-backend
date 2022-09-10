@@ -10,7 +10,7 @@ public interface CharacterService {
 
     CharacterDto setUp(User user);
     CharacterDto getOngoingCharacter(User user);
-//    List<CollectionDto> getCharacterCollection(User user);
+    List<CollectionDto> getCharacterCollection(User user);
     CharacterDto reachToNextLevel(User user, Integer point);
 
 }

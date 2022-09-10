@@ -28,7 +28,6 @@ public class Collections {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id")
-    @JsonIgnore
     private Characters character;
 
     @CreatedDate

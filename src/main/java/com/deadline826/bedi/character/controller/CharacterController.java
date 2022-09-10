@@ -51,14 +51,14 @@ public class CharacterController {
         return ResponseEntity.ok().body(response);
     }
 
-//    @GetMapping("/collect")
-//    public ResponseEntity<List> getUserCollectedCharacters() {
-//
-//        User user = userService.getUserFromAccessToken();
-//
-//        List<CollectionDto> collectionDtoList = characterService.getCharacterCollection(user);
-//
-//        return ResponseEntity.ok().body(collectionDtoList);
-//    }
+    @GetMapping("/collect")
+    public ResponseEntity<List> getUserCollectedCharacters() {
+
+        User user = userService.getUserFromAccessToken();
+
+        List<CollectionDto> collectionDtoList = characterService.getCharacterCollection(user);
+
+        return ResponseEntity.ok().body(collectionDtoList);
+    }
 
 }
