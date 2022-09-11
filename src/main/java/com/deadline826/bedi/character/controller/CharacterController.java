@@ -45,20 +45,23 @@ public class CharacterController {
         Integer point = pointService.getAccumulatedPoint(user);
         response.put("point", point);
 
-        CharacterDto characterDto = characterService.getOngoingCharacter(user);
-        response.put("character", characterDto);
+        CharacterDto ongoing = characterService.getOngoingCharacter(user);
+        response.put("character", ongoing);
+
+        CharacterDto next = characterService.getNextCharacter(user);
+        if (next != null) response.put("next", next.getMinimunPointToReach());
 
         return ResponseEntity.ok().body(response);
     }
 
-//    @GetMapping("/collect")
-//    public ResponseEntity<List> getUserCollectedCharacters() {
-//
-//        User user = userService.getUserFromAccessToken();
-//
-//        List<CollectionDto> collectionDtoList = characterService.getCharacterCollection(user);
-//
-//        return ResponseEntity.ok().body(collectionDtoList);
-//    }
+    @GetMapping("/collect")
+    public ResponseEntity<List> getUserCollectedCharacters() {
+
+        User user = userService.getUserFromAccessToken();
+
+        List<CollectionDto> collectionDtoList = characterService.getCharacterCollection(user);
+
+        return ResponseEntity.ok().body(collectionDtoList);
+    }
 
 }

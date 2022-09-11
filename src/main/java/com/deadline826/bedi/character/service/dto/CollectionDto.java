@@ -1,18 +1,21 @@
 package com.deadline826.bedi.character.service.dto;
 
-import com.deadline826.bedi.character.domain.Characters;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CollectionDto {
 
     private String characterName;
     private String characterImage;
-    private Integer characterLevel;
+    private Integer characerLevel;
     private String state;
 
-    public CollectionDto(Characters characters, String state) {
-        this.characterName = characters.getName();
-        this.characterImage = characters.getImg();
-        this.characterLevel = characters.getLevel();
+    public CollectionDto(String characterName, String characterImage, Integer characerLevel, String state) {
+        this.characterName = characterName;
+        this.characterImage = characterImage;
+        this.characerLevel = characerLevel;
         this.state = state;
     }
 
