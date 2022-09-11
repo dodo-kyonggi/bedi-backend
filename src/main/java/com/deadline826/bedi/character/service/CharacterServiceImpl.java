@@ -69,9 +69,20 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     @Transactional(readOnly = true)
     public List<CollectionDto> getCharacterCollection(User user) {
-        List<CollectionDto> collectionDtoList = collectionRepository.findAllByUserOrderByLevelAsc(user);
-        System.out.println("collectionDtoList.size() = " + collectionDtoList.size());
-        return collectionDtoList;
+        return collectionRepository.findAllByUserOrderByLevelAsc(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CharacterDto getNextCharacter(User user) {
+        Collections ongoing = collectionRepository.findOneByUserAndState(user, "ongoing");
+
+        Characters now = ongoing.getCharacter();
+
+        Characters next = characterRepository.findOneByLevel(now.getLevel() + 1);
+
+        if (next == null) return null;
+        else return modelMapper.map(next, CharacterDto.class);
     }
 
     @Override

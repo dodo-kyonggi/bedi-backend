@@ -45,8 +45,11 @@ public class CharacterController {
         Integer point = pointService.getAccumulatedPoint(user);
         response.put("point", point);
 
-        CharacterDto characterDto = characterService.getOngoingCharacter(user);
-        response.put("character", characterDto);
+        CharacterDto ongoing = characterService.getOngoingCharacter(user);
+        response.put("character", ongoing);
+
+        CharacterDto next = characterService.getNextCharacter(user);
+        if (next != null) response.put("next", next.getMinimunPointToReach());
 
         return ResponseEntity.ok().body(response);
     }
