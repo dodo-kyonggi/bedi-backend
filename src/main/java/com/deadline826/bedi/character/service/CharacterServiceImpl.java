@@ -105,7 +105,7 @@ public class CharacterServiceImpl implements CharacterService {
             before.setState("completed");
             next.setState("ongoing");
 
-            return modelMapper.map(next, CharacterDto.class);
+            return modelMapper.map(nextCharacter, CharacterDto.class);
         }
         else return null;
     }
