@@ -1,14 +1,11 @@
 package com.deadline826.bedi.point.domain;
 
-import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor

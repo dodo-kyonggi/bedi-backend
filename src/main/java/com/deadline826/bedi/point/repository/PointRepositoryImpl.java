@@ -1,11 +1,10 @@
 package com.deadline826.bedi.point.repository;
 
-import com.deadline826.bedi.login.Domain.QUser;
+import com.deadline826.bedi.login.domain.QUser;
 import com.deadline826.bedi.point.domain.QPoint;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor

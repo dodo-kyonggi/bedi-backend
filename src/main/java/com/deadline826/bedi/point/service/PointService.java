@@ -1,6 +1,6 @@
 package com.deadline826.bedi.point.service;
 
-import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.domain.User;
 
 public interface PointService {
 

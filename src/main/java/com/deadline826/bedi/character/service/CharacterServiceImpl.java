@@ -6,7 +6,7 @@ import com.deadline826.bedi.character.repository.CharacterRepository;
 import com.deadline826.bedi.character.repository.CollectionRepository;
 import com.deadline826.bedi.character.service.dto.CharacterDto;
 import com.deadline826.bedi.character.service.dto.CollectionDto;
-import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.deadline826.bedi.login.repository;
 
-import com.deadline826.bedi.login.Domain.QUser;
+import com.deadline826.bedi.login.domain.QUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 

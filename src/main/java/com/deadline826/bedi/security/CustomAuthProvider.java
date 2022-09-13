@@ -1,9 +1,8 @@
 package com.deadline826.bedi.security;
 
-import com.deadline826.bedi.login.Domain.User;
-import com.deadline826.bedi.login.Service.VerifyPasswordService;
+import com.deadline826.bedi.login.service.VerifyPasswordService;
 import com.deadline826.bedi.login.repository.UserRepository;
-import com.deadline826.bedi.login.Service.UserService;
+import com.deadline826.bedi.login.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Optional;
 
 
 @RequiredArgsConstructor

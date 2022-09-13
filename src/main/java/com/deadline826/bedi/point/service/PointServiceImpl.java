@@ -1,11 +1,10 @@
 package com.deadline826.bedi.point.service;
 
-import com.deadline826.bedi.login.Domain.User;
+import com.deadline826.bedi.login.domain.User;
 import com.deadline826.bedi.point.domain.Point;
 import com.deadline826.bedi.point.domain.PointRecord;
 import com.deadline826.bedi.point.repository.PointRecordRepository;
 import com.deadline826.bedi.point.repository.PointRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
