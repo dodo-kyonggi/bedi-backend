@@ -1,10 +1,18 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	// querydsl
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 	id 'java'
 }
 
-group = 'com.deadline-8-26'
+group = 'com.deadline826'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -20,20 +28,69 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
+
+	// db
 	runtimeOnly 'mysql:mysql-connector-java'
+	runtimeOnly 'com.h2database:h2'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	// JWT
+	implementation 'com.auth0:java-jwt:3.19.2'
+
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.9'
+
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'com.google.code.gson:gson:2.9.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	//querydsl
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	// model mapper
+	implementation 'org.modelmapper:modelmapper:3.0.0'
+
+	//phone auth
+	implementation group: 'net.nurigo', name: 'javaSDK', version: '2.2'
+
+	//REDIS
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// spring-jdbc
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.22'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
+
+//querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main.java.srcDir querydslDir
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
 }
 
 bootJar{

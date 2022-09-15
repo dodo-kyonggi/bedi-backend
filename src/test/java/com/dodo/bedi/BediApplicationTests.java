@@ -1,4 +1,4 @@
-package com.deadline826.bedi;
+package com.dodo.bedi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
