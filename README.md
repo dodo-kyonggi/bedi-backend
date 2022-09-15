@@ -74,7 +74,7 @@
 - Clone Repository
 
   ```bash
-  git clone https://github.com/deadline-8-26/Being_Diligent.git
+  git clone https://github.com/dodo-kyonggi/bedi-backend.git
   ```
 
 <br>
