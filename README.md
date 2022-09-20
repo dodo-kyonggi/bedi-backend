@@ -1,4 +1,4 @@
-# 앱 로고 삽입
+# ![image](https://user-images.githubusercontent.com/82079111/191252506-45bf2190-af8a-45b3-af78-f21291179066.png)
 
 ## **❓ What is Bedi**
 
