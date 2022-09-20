@@ -47,6 +47,9 @@
 - 이용자들 중 상위 랭킹 퍼센트
 - 최근 7일 달성률
 
+![image](https://user-images.githubusercontent.com/82079111/191259791-07a0fe7c-679b-4643-8fde-c904712af845.png)
+
+
 <br>
 
 ## **▶️ 시연 영상**
@@ -61,9 +64,14 @@
 <br>
 
 ## **👷 Architecture**
-- 개발환경 및 개발언어
+1. 개발환경 및 개발언어
 
 ![image](https://user-images.githubusercontent.com/82079111/191258464-ff41762c-19ca-4b79-bd0b-78bb9d5b6be6.png)
+
+2. 데이터베이스(ERD)
+
+![image](https://user-images.githubusercontent.com/82079111/191259520-d7f090a1-29d4-47a7-a6fa-3a6c70597010.png)
+
 
 
 
