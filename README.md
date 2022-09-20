@@ -50,8 +50,8 @@
 <br>
 
 ## **▶️ 시연 화면**
-
-[![image](https://user-images.githubusercontent.com/82079111/191255223-174c3ea9-56f9-4c09-8129-8dbc786d4b62.png)Youtube](https://www.youtube.com/watch?v=jEoeNd7pips) 
+![image](https://user-images.githubusercontent.com/82079111/191255223-174c3ea9-56f9-4c09-8129-8dbc786d4b62.png)
+[Youtube](https://www.youtube.com/watch?v=jEoeNd7pips) 
 
 <br>
 
