@@ -50,7 +50,7 @@
 <br>
 
 ## **▶️ 시연 화면**
-![image](https://img.icons8.com/color/48/000000/youtube-play.png)[Youtube](https://www.youtube.com/watch?v=jEoeNd7pips) 
+[![image](https://img.icons8.com/color/48/000000/youtube-play.png)](https://www.youtube.com/watch?v=jEoeNd7pips) 
 
 <br>
 
