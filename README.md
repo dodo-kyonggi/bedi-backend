@@ -49,7 +49,7 @@
 
 <br>
 
-## **▶️ 시연 화면**
+## **▶️ 시연 영상**
 [![image](https://img.icons8.com/color/48/000000/youtube-play.png)](https://www.youtube.com/watch?v=jEoeNd7pips) 
 
 <br>
@@ -61,6 +61,9 @@
 <br>
 
 ## **👷 Architecture**
+-개발환경 및 개발언어
+![image](https://user-images.githubusercontent.com/82079111/191258464-ff41762c-19ca-4b79-bd0b-78bb9d5b6be6.png)
+
 
 
 <br>
