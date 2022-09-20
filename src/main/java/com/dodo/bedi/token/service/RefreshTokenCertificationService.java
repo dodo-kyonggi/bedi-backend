@@ -22,19 +22,4 @@ public class RefreshTokenCertificationService {
         return  refreshTokenCertificationDao.getRefreshTokenCertification(id);
 
     }
-
-    public void removeRefreshToken(String id) {
-
-        refreshTokenCertificationDao.removeRefreshTokenCertification(id);
-
-    }
-
-    public boolean hasRefreshToken(String id) {
-
-        return refreshTokenCertificationDao.hasKey(id);
-
-    }
-
-
-
 }

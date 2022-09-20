@@ -45,7 +45,6 @@ import io.jsonwebtoken.Jwts;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    //private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private CustomAuthenticationFilter authenticationFilter;
     private final GoalRepository goalRepository;
@@ -59,7 +58,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     // 만료시간 추가
     public Date getExpireTime(String refreshtoken) {
 
-//        String[] token = refreshtoken.split(" ");
 
         return Jwts.parser().setSigningKey(JwtConstants.JWT_SECRET.getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(refreshtoken)
@@ -67,8 +65,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .getExpiration();
     }
 
-    // 로그인 처리 후 JWT토큰 발급
-    //return 쪽 수정했습니다
+    // 로그인 처리 후 JWT 토큰 발급
+
     public TokenDto login(LoginDto loginDto) {
         try {
 
@@ -104,7 +102,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return TokenDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .refreshTokenExpireTime(getExpireTime(refreshToken))  // 이 부분
+                    .refreshTokenExpireTime(getExpireTime(refreshToken))
                     .build();
 
         } catch (AuthenticationException e) {
@@ -127,16 +125,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),Collections.EMPTY_LIST);
     }
 
-    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
-
-        //유저 정보 가져오기
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("UserDetailsService - loadUserByUsername : 사용자를 찾을 수 없습니다."));
-
-        // authorities 대신 Collections.EMPTY_LIST을 넣어 Role 없이 인증가능하게 했다
-        //CustomAuthProvider 의 authenticate 로 복귀
-        return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassword(),Collections.EMPTY_LIST);
-    }
+//    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
+//
+//        //유저 정보 가져오기
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new UsernameNotFoundException("UserDetailsService - loadUserByUsername : 사용자를 찾을 수 없습니다."));
+//
+//        // authorities 대신 Collections.EMPTY_LIST을 넣어 Role 없이 인증가능하게 했다
+//        //CustomAuthProvider 의 authenticate 로 복귀
+//        return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassword(),Collections.EMPTY_LIST);
+//    }
 
     @Override
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
@@ -160,17 +158,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     }
 
-    @Override
-    public User findUserByEmail(String email) {
-        try {
-            Optional<User> user = userRepository.findByEmail(email);
-            return user.get();
-        }
-        catch (NoSuchElementException e){
-            throw new NoSuchElementException();
-        }
-
-    }
+//    @Override
+//    public User findUserByEmail(String email) {
+//        try {
+//            Optional<User> user = userRepository.findByEmail(email);
+//            return user.get();
+//        }
+//        catch (NoSuchElementException e){
+//            throw new NoSuchElementException();
+//        }
+//
+//    }
 
 
     @Override

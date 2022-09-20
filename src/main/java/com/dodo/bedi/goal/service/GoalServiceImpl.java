@@ -4,7 +4,6 @@ import com.dodo.bedi.goal.domain.Dto.GoalPostDto;
 import com.dodo.bedi.goal.domain.Dto.GoalDto;
 import com.dodo.bedi.goal.domain.Dto.GoalRequestDto;
 import com.dodo.bedi.goal.domain.Goal;
-import com.deadline826.bedi.goal.exception.*;
 import com.dodo.bedi.goal.exception.*;
 import com.dodo.bedi.goal.repository.GoalRepository;
 import com.dodo.bedi.statistics.domain.Complete;

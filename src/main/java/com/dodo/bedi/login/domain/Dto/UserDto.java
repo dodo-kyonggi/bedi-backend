@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 public class UserDto {
-    private Long id;     // 카카오가 넘겨주는 랜덤 값
+    private Long id;     // 랜덤 값
     private String username;    // 사용자 이름
     private String password;
     private String email;    // 로그인 이메일

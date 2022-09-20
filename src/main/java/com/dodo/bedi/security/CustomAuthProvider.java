@@ -21,11 +21,11 @@ import java.util.Collections;
 @Component
 public class CustomAuthProvider implements AuthenticationProvider {
 
-    private final UserDetailsService userDetailsService;
+
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final VerifyPasswordService verifyPasswordService;
-    private final UserRepository userRepository;
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

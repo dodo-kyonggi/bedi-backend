@@ -17,15 +17,14 @@ public interface UserService {
 
     TokenDto login(LoginDto loginDto);
 
-//    void updateRefreshToken(String id, RefreshToken refreshToken);  //RefreshToken 업데이트
 
     TokenDto refresh(String refreshToken);  //RefreshToken 으로 AccessToken 받아올때 사용
 
-    UserDetails loadUserById(Long id);
+    //UserDetails loadUserById(Long id);
 
     User findUserById(Long id);
 
-    User findUserByEmail(String email);
+    //User findUserByEmail(String email);
 
     UserDetails loadUserByEmail(String email) throws UsernameNotFoundException;
 

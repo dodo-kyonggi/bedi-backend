@@ -16,6 +16,7 @@ public class TempPasswordDao {
 
     private final StringRedisTemplate stringRedisTemplate;
 
+    //레디스에 비밀번호 임시저장
     public void createPasswordCertification(String email, String rawPassword) {
         stringRedisTemplate.opsForValue()
                 .set( email, rawPassword, Duration.ofSeconds(LIMIT_TIME));

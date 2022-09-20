@@ -12,10 +12,10 @@ public class SmsCertificationRequest {
     private String phone;
     private String certificationNumber;
 
-    @Builder
-    public SmsCertificationRequest(String phone, String certificationNumber) {
-        this.phone = phone;
-        this.certificationNumber = certificationNumber;
-    }
+//    @Builder
+//    public SmsCertificationRequest(String phone, String certificationNumber) {
+//        this.phone = phone;
+//        this.certificationNumber = certificationNumber;
+//    }
 
 }

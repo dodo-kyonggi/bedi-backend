@@ -12,10 +12,6 @@ import java.time.Duration;
 public class RefreshTokenCertificationDao {
 
 
-
-
-    private final int LIMIT_TIME = 2 * 60;  // (2)
-
     private final StringRedisTemplate stringRedisTemplate;
 
     public void saveRefreshTokenCertification(String id, String token) { //(3)
@@ -29,13 +25,7 @@ public class RefreshTokenCertificationDao {
         return stringRedisTemplate.opsForValue().get(id);
     }
 
-    public void removeRefreshTokenCertification(String id) { // (5)
-        stringRedisTemplate.delete(id);
-    }
 
-    public boolean hasKey(String id) {  //(6)
-        return stringRedisTemplate.hasKey(id);
-    }
 
 
 }

@@ -16,6 +16,7 @@ public class SmsCertificationDao {
 
     private final StringRedisTemplate stringRedisTemplate;
 
+    //레디스에 인증번호 생성
     public void createSmsCertification(String phone, String certificationNumber) { //(3)
         stringRedisTemplate.opsForValue()
                 .set(PREFIX + phone, certificationNumber, Duration.ofSeconds(LIMIT_TIME));

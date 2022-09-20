@@ -45,17 +45,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 사용 X
 
-        // 로그인, 리프레시 요청이라면 모두 허용
-
+        // 로그인, 회원가입, 리프레시, 인증메세지 전송 요청이라면 모두 허용
         http.authorizeRequests().antMatchers("/","/message/send","/message/confirm").permitAll();
         http.authorizeRequests().antMatchers("/user/login","/user/signup","/user/refresh").permitAll();
+
         //그 외는 토큰으로 인증 받아야함
         http.authorizeRequests().anyRequest().authenticated();
 
-        // http.addFilter(customAuthenticationFilter);
+        //access 토큰 검사
         http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-        //http.addFilter(customAuthorizationFilter);
 
+        //접근제어
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
     }
 
