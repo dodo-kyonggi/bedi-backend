@@ -46,7 +46,9 @@
 - 나의 목표 전체 달성 개수
 - 이용자들 중 상위 랭킹 퍼센트
 - 최근 7일 달성률
+
 <br>
+
 ![image](https://user-images.githubusercontent.com/82079111/191259791-07a0fe7c-679b-4643-8fde-c904712af845.png)
 
 
