@@ -72,7 +72,8 @@
 
 2. 데이터베이스(ERD)
 
-![image](https://user-images.githubusercontent.com/82079111/191259520-d7f090a1-29d4-47a7-a6fa-3a6c70597010.png)
+![image](https://github.com/dodo-kyonggi/bedi-backend/assets/82079111/f7139876-b7ca-47f3-9b2f-77a7658fd1f1)
+
 
 
 
